@@ -1,26 +1,26 @@
 'use client';
 
-import { useRef, useState, useSyncExternalStore } from 'react';
-import Image from 'next/image';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useEffect, useRef, useSyncExternalStore } from 'react';
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 import type { Translations } from '@/lib/i18n';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { useScrollVideo } from '@/hooks/useScrollVideo';
 import HeroContent from './HeroContent';
 import ScrollIndicator from './ScrollIndicator';
-import HeroFallback from './HeroFallback';
 
 interface HeroProps {
   t: Translations;
 }
 
-const POSTER = '/images/hero-poster.jpg';
 const VIDEO_MP4 = '/videos/hero-garage.mp4';
-const VIDEO_WEBM = '/videos/hero-garage.webm';
 
-// Network Information API é experimental — só Chromium expõe.
-// Em outros browsers, ignoramos a checagem (sem regressão de UX).
+// Hydration-safe client check (canonical React 19 pattern).
+const subscribeNoop = () => () => {};
+const useIsClient = () =>
+  useSyncExternalStore(subscribeNoop, () => true, () => false);
+
+// Network Information API (experimental, Chromium-only). Returns true for
+// 2g/slow-2g/saveData; ignored elsewhere.
 function detectSlowConnection(): boolean {
   if (typeof navigator === 'undefined') return false;
   const conn = (navigator as Navigator & {
@@ -31,136 +31,167 @@ function detectSlowConnection(): boolean {
   return conn.effectiveType === '2g' || conn.effectiveType === 'slow-2g';
 }
 
-// useSyncExternalStore com subscribe no-op é o padrão canônico em React 19
-// para hydration check: snapshot retorna `false` no servidor e `true` depois
-// que o componente monta no cliente. Substitui o antigo `useState(false)` +
-// `useEffect(() => setMounted(true), [])`, que viola a regra
-// react-hooks/set-state-in-effect.
-const subscribeNoop = () => () => {};
-const useIsClient = () =>
-  useSyncExternalStore(subscribeNoop, () => true, () => false);
-
-/**
- * Wrapper que decide o modo de renderização. NÃO chama useScroll aqui —
- * se chamarmos, o ref que ele recebe ficaria pendurado em uma <section>
- * que ainda não foi renderizada (porque retornamos HeroFallback antes),
- * e o framer-motion lança "Target ref is defined but not hydrated".
- *
- * A solução é montar HeroParallax como componente próprio, garantindo que
- * useScroll só roda quando a <section> com o ref existe no DOM.
- */
 export default function Hero({ t }: HeroProps) {
   const isClient = useIsClient();
+  const isMobile = useIsMobile();
   const reducedMotion = useReducedMotion();
-  // detectSlowConnection toca em `navigator` — só chamar depois da hidratação.
   const slowConnection = isClient && detectSlowConnection();
 
-  if (!isClient || reducedMotion || slowConnection) {
-    return <HeroFallback t={t} />;
-  }
-
-  return <HeroParallax t={t} />;
-}
-
-/**
- * Hero "completa" com vídeo. Quando este componente renderiza, a <section>
- * com `wrapperRef` é parte do JSX retornado, então o ref já está anexado
- * antes do useEffect interno do framer-motion rodar.
- */
-function HeroParallax({ t }: HeroProps) {
-  const [isVideoReady, setIsVideoReady] = useState(false);
-  const isMobile = useIsMobile();
+  // Mode resolution. SSR + first client render before useSyncExternalStore
+  // settles always produce `false` for both flags, so the initial HTML is
+  // always the scroll-controlled variant — no hydration mismatch, no flash
+  // of broken-image fallback.
+  const isStatic = isClient && (reducedMotion || slowConnection);
+  const isLoop = isClient && isMobile && !reducedMotion && !slowConnection;
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // useScroll com offset ['start start', 'end start'] devolve scrollYProgress
-  // 0→1 conforme o topo do wrapper passa pelo topo da viewport até o fim
-  // do wrapper alcançar o topo. Como o wrapper tem 250vh de altura, isso
-  // dá 150vh "de margem" extra para mover a playhead.
   const { scrollYProgress } = useScroll({
     target: wrapperRef,
     offset: ['start start', 'end start'],
   });
 
-  // Parallax leve para o modo mobile (vídeo em loop): pequeno deslocamento Y.
+  // Spring smoothing on scroll progress = Apple / GTA VI feel: scroll burst
+  // becomes a smoothly-decaying playhead motion instead of frame-jumping.
+  // mass < 1 keeps it responsive; stiffness/damping ratio tuned to ~0.7
+  // critical damping (subtle overshoot, no oscillation).
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 140,
+    damping: 30,
+    mass: 0.6,
+    restDelta: 0.0005,
+  });
+
+  // Subtle Y parallax for the mobile loop variant.
   const mobileVideoY = useTransform(scrollYProgress, [0, 1], ['0%', '-15%']);
 
-  // Em mobile, scroll-controlled performa mal (seeks constantes em codecs
-  // de delivery). Usamos loop autoplay; o hook respeita `enabled=false`.
-  const useScrollControl = !isMobile;
-  useScrollVideo(videoRef, scrollYProgress, useScrollControl);
+  // Drive video.currentTime from the smoothed progress. Skipped in static /
+  // loop modes (loop variant plays itself; static has no video).
+  useEffect(() => {
+    if (isStatic || isLoop) return;
+    const video = videoRef.current;
+    if (!video) return;
+
+    // Manual playhead control — make sure the browser does NOT advance time
+    // on its own. Without this, some browsers will "settle" currentTime
+    // forward during decode, fighting our scroll-driven seeks.
+    video.playbackRate = 0;
+
+    let rafId: number | null = null;
+
+    // 1 frame at 30fps ≈ 33ms. Skipping seeks below this avoids redundant
+    // work when the spring is settling on a value within 1 frame's worth
+    // of progress — those seeks would never actually change the rendered
+    // frame anyway and just waste decoder cycles.
+    const FRAME_EPSILON = 0.033;
+
+    const seek = (target: number) => {
+      if (Math.abs(video.currentTime - target) < FRAME_EPSILON) return;
+      video.currentTime = target;
+    };
+
+    const onChange = (progress: number) => {
+      if (!video.duration || isNaN(video.duration)) return;
+      const target = video.duration * progress;
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => seek(target));
+    };
+
+    const unsubscribe = smoothProgress.on('change', onChange);
+
+    // Initial sync once metadata is available — without this, the playhead
+    // sits at frame 0 even if the user already scrolled before the video
+    // finished loading metadata.
+    const initSync = () => onChange(smoothProgress.get());
+    if (video.readyState >= 1) {
+      initSync();
+    } else {
+      video.addEventListener('loadedmetadata', initSync, { once: true });
+    }
+
+    return () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      unsubscribe();
+      video.removeEventListener('loadedmetadata', initSync);
+    };
+  }, [isStatic, isLoop, smoothProgress]);
+
+  // Reduced motion / slow connection: collapse to a still hero. No 250vh
+  // wrapper, no video bytes, no animation. (This DOES cause a layout swap
+  // post-hydration for these users, but they explicitly opt out of motion
+  // and the swap is invisible since both states render at the top of the
+  // page before any scroll.)
+  if (isStatic) {
+    return (
+      <section
+        aria-label="OVRDRV — SEM LIMITE"
+        className="relative min-h-screen w-full overflow-hidden bg-black"
+      >
+        <div className="absolute inset-0 bg-linear-to-t from-black via-black/40 to-transparent pointer-events-none" />
+        <div className="relative z-10 min-h-screen flex flex-col justify-center items-center text-center px-6">
+          <h1 className="text-[clamp(4rem,12vw,12rem)] font-black tracking-tighter leading-none text-white">
+            OVRDRV
+          </h1>
+          <h2 className="text-2xl md:text-4xl font-black tracking-[0.3em] mt-4 text-white">
+            {t.hero.slogan}
+          </h2>
+          <p className="mt-6 max-w-md text-base md:text-lg text-white/80">
+            {t.hero.subtitle}
+          </p>
+          <a
+            href="#products"
+            className="mt-10 inline-block px-8 py-4 border-2 border-white text-white font-bold tracking-widest hover:bg-white hover:text-black transition-colors"
+          >
+            {t.hero.cta}
+          </a>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
       ref={wrapperRef}
       aria-label="OVRDRV — SEM LIMITE, garagem industrial revelando carro tunado"
-      // 250vh dá ~150vh de "espaço de scroll" extra (além do 100vh sticky)
-      // para o useScroll mover scrollYProgress de 0 a 1.
+      // 250vh = 1.5 viewports of scroll budget for the playhead to scrub
+      // from frame 0 to the last frame. Sticky child is pinned at 100vh
+      // and stays imposing through the whole reveal.
       className="relative h-[250vh]"
     >
-      {/*
-        sticky + h-screen: prende o conteúdo do vídeo enquanto o usuário
-        rola pelos 250vh do wrapper externo. Quando o wrapper sai do
-        viewport (em 100% do progress), o sticky se solta naturalmente.
-      */}
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
-        {useScrollControl ? (
-          // ATENÇÃO: NÃO usar `autoPlay` — `currentTime` é manipulado
-          // manualmente pelo useScrollVideo (proporcional ao scroll).
-          (<video
-            ref={videoRef}
-            className="absolute inset-0 w-full h-full object-cover"
-            muted
-            playsInline
-            preload="auto"
-            poster={POSTER}
-            aria-hidden="true"
-            disablePictureInPicture
-            disableRemotePlayback
-            onLoadedData={() => setIsVideoReady(true)}
-          >
-            <source src={VIDEO_WEBM} type="video/webm" />
-            <source src={VIDEO_MP4} type="video/mp4" />
-          </video>)
-        ) : (
-          <motion.video
-            ref={videoRef}
-            style={{ y: mobileVideoY }}
-            className="absolute inset-0 w-full h-[115%] object-cover"
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            poster={POSTER}
-            aria-hidden="true"
-            disablePictureInPicture
-            disableRemotePlayback
-            onLoadedData={() => setIsVideoReady(true)}
-          >
-            <source src={VIDEO_WEBM} type="video/webm" />
-            <source src={VIDEO_MP4} type="video/mp4" />
-          </motion.video>
-        )}
+        {/*
+          Same <motion.video> for both modes. No `poster` (we don't have
+          a poster asset, and a missing one renders a broken-image icon).
+          No <Image> loading overlay either — the browser shows black until
+          the first frame decodes, which is cleaner than a broken icon.
 
-        {/* Loading state: o poster cobre a área até o vídeo bufferizar
-            (evita flash preto enquanto o MP4 baixa). */}
-        {!isVideoReady && (
-          <div className="absolute inset-0 z-20 bg-black">
-            <Image
-              src={POSTER}
-              alt=""
-              aria-hidden="true"
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover"
-            />
-          </div>
-        )}
+          When `isLoop` is true (mobile post-mount), we add autoPlay/loop
+          and the Y-transform parallax. Otherwise the playhead is driven
+          by the smoothProgress effect above. The element itself never
+          unmounts on the SSR→client transition, so the video doesn't
+          re-fetch.
+        */}
+        <motion.video
+          ref={videoRef}
+          src={VIDEO_MP4}
+          className={
+            isLoop
+              ? 'absolute inset-0 w-full h-[115%] object-cover'
+              : 'absolute inset-0 w-full h-full object-cover'
+          }
+          style={isLoop ? { y: mobileVideoY } : undefined}
+          autoPlay={isLoop}
+          loop={isLoop}
+          muted
+          playsInline
+          preload="auto"
+          aria-hidden="true"
+          disablePictureInPicture
+          disableRemotePlayback
+        />
 
-        {/* Overlay para garantir contraste do texto sobre o vídeo (WCAG AA). */}
+        {/* Gradient overlay for WCAG AA contrast on the text. */}
         <div className="absolute inset-0 z-10 bg-linear-to-t from-black via-black/40 to-transparent pointer-events-none" />
 
         <HeroContent t={t} scrollYProgress={scrollYProgress} />
