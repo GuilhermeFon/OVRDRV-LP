@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { motion } from 'framer-motion';
 import Hero from '@/components/hero/Hero';
 import ProductSection from '@/components/ProductSection';
@@ -10,8 +10,28 @@ import Footer from '@/components/Footer';
 import LanguageToggle from '@/components/LanguageToggle';
 import { translations, type Language } from '@/lib/i18n';
 
+const subscribeScrollResize = (callback: () => void) => {
+  window.addEventListener('scroll', callback, { passive: true });
+  window.addEventListener('resize', callback);
+  return () => {
+    window.removeEventListener('scroll', callback);
+    window.removeEventListener('resize', callback);
+  };
+};
+
+const getHeroPassed = () => {
+  const hero = document.querySelector<HTMLElement>('section[aria-label*="OVRDRV"]');
+  if (!hero) return false;
+  return hero.getBoundingClientRect().bottom <= 0;
+};
+
 export default function Home() {
   const [language, setLanguage] = useState<Language>('pt');
+  const heroPassed = useSyncExternalStore(
+    subscribeScrollResize,
+    getHeroPassed,
+    () => false,
+  );
   const t = translations[language];
 
   const scrollToSection = (id: string) => {
@@ -22,9 +42,14 @@ export default function Home() {
     <div className="bg-black dark:bg-black text-white min-h-screen">
       <motion.nav
         initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6 }}
-        className="fixed top-0 left-0 right-0 z-50 bg-black/80 dark:bg-black/80 backdrop-blur-lg border-b border-neutral-800"
+        animate={
+          heroPassed ? { y: 0, opacity: 1 } : { y: -100, opacity: 0 }
+        }
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        aria-hidden={!heroPassed}
+        className={`fixed top-0 left-0 right-0 z-50 bg-black/80 dark:bg-black/80 backdrop-blur-lg border-b border-neutral-800 ${
+          heroPassed ? '' : 'pointer-events-none'
+        }`}
       >
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <motion.div
@@ -58,7 +83,7 @@ export default function Home() {
         </div>
       </motion.nav>
 
-      <main className="pt-16">
+      <main>
         <Hero t={t} />
         <Ticker />
         <ProductSection t={t} />
