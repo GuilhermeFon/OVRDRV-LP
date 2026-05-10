@@ -43,7 +43,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
+      <head>
+        {/* Preload do vídeo da hero — LCP crítico.
+            `as="video"` faz o browser reservar conexão e começar o download
+            antes do React montar. Mantenha somente UM dos formatos no preload
+            (o que tem maior compatibilidade); o outro fica como <source>. */}
+        <link
+          rel="preload"
+          as="video"
+          href="/videos/hero-garage.mp4"
+          type="video/mp4"
+        />
+      </head>
       <body className={inter.className}>{children}</body>
     </html>
   );
