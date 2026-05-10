@@ -11,7 +11,7 @@ import { type MotionValue } from 'framer-motion';
  * evitando bursts de seek quando o usuário rola muito rápido.
  */
 export function useScrollVideo(
-  videoRef: RefObject<HTMLVideoElement>,
+  videoRef: RefObject<HTMLVideoElement | null>,
   scrollYProgress: MotionValue<number>,
   enabled = true
 ) {
