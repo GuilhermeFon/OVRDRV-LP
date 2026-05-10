@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState, useSyncExternalStore } from 'react';
 import Image from 'next/image';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import type { Translations } from '@/lib/i18n';
@@ -31,6 +31,15 @@ function detectSlowConnection(): boolean {
   return conn.effectiveType === '2g' || conn.effectiveType === 'slow-2g';
 }
 
+// useSyncExternalStore com subscribe no-op é o padrão canônico em React 19
+// para hydration check: snapshot retorna `false` no servidor e `true` depois
+// que o componente monta no cliente. Substitui o antigo `useState(false)` +
+// `useEffect(() => setMounted(true), [])`, que viola a regra
+// react-hooks/set-state-in-effect.
+const subscribeNoop = () => () => {};
+const useIsClient = () =>
+  useSyncExternalStore(subscribeNoop, () => true, () => false);
+
 /**
  * Wrapper que decide o modo de renderização. NÃO chama useScroll aqui —
  * se chamarmos, o ref que ele recebe ficaria pendurado em uma <section>
@@ -41,16 +50,12 @@ function detectSlowConnection(): boolean {
  * useScroll só roda quando a <section> com o ref existe no DOM.
  */
 export default function Hero({ t }: HeroProps) {
-  const [mounted, setMounted] = useState(false);
-  const [slowConnection, setSlowConnection] = useState(false);
+  const isClient = useIsClient();
   const reducedMotion = useReducedMotion();
+  // detectSlowConnection toca em `navigator` — só chamar depois da hidratação.
+  const slowConnection = isClient && detectSlowConnection();
 
-  useEffect(() => {
-    setMounted(true);
-    setSlowConnection(detectSlowConnection());
-  }, []);
-
-  if (!mounted || reducedMotion || slowConnection) {
+  if (!isClient || reducedMotion || slowConnection) {
     return <HeroFallback t={t} />;
   }
 

@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function NotFound() {
   return (
     <main className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-6 text-center">
@@ -7,12 +9,12 @@ export default function NotFound() {
       <p className="mt-4 text-lg md:text-xl text-white/70 tracking-widest">
         PÁGINA NÃO ENCONTRADA
       </p>
-      <a
+      <Link
         href="/"
         className="mt-10 inline-block px-8 py-4 border-2 border-white text-white font-bold tracking-widest hover:bg-white hover:text-black transition-colors"
       >
         VOLTAR
-      </a>
+      </Link>
     </main>
   );
 }

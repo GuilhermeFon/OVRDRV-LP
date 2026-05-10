@@ -1,17 +1,28 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
 
+/**
+ * Subscreve a uma media query usando useSyncExternalStore — padrão canônico
+ * em React 19 que evita o anti-pattern "setState dentro de useEffect" e
+ * lida corretamente com SSR (snapshot do servidor é sempre `false`).
+ */
 export function useIsMobile(breakpoint = 768) {
-  const [isMobile, setIsMobile] = useState(false);
+  const query = `(max-width: ${breakpoint - 1}px)`;
 
-  useEffect(() => {
-    const mq = window.matchMedia(`(max-width: ${breakpoint - 1}px)`);
-    setIsMobile(mq.matches);
-    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
-  }, [breakpoint]);
+  const subscribe = useCallback(
+    (callback: () => void) => {
+      const mq = window.matchMedia(query);
+      mq.addEventListener('change', callback);
+      return () => mq.removeEventListener('change', callback);
+    },
+    [query]
+  );
 
-  return isMobile;
+  const getSnapshot = useCallback(
+    () => window.matchMedia(query).matches,
+    [query]
+  );
+
+  return useSyncExternalStore(subscribe, getSnapshot, () => false);
 }
