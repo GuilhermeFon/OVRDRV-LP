@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import Hero from '@/components/Hero';
+import Hero from '@/components/hero/Hero';
 import ProductSection from '@/components/ProductSection';
 import Carousel from '@/components/Carousel';
 import Ticker from '@/components/Ticker';
