@@ -75,7 +75,7 @@ export default function Footer({ t }: FooterProps) {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
-                  className="w-full px-6 py-4 bg-neutral-900 dark:bg-neutral-900 border border-neutral-800 text-white placeholder-neutral-500 focus:outline-none focus:border-white transition-colors"
+                  className="w-full px-6 py-4 bg-neutral-900 dark:bg-neutral-900 border border-neutral-800 text-white placeholder-neutral-500 focus:outline-hidden focus:border-white transition-colors"
                 />
               </div>
 
@@ -86,7 +86,7 @@ export default function Footer({ t }: FooterProps) {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
-                  className="w-full px-6 py-4 bg-neutral-900 dark:bg-neutral-900 border border-neutral-800 text-white placeholder-neutral-500 focus:outline-none focus:border-white transition-colors"
+                  className="w-full px-6 py-4 bg-neutral-900 dark:bg-neutral-900 border border-neutral-800 text-white placeholder-neutral-500 focus:outline-hidden focus:border-white transition-colors"
                 />
               </div>
 
@@ -97,7 +97,7 @@ export default function Footer({ t }: FooterProps) {
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   required
                   rows={5}
-                  className="w-full px-6 py-4 bg-neutral-900 dark:bg-neutral-900 border border-neutral-800 text-white placeholder-neutral-500 focus:outline-none focus:border-white transition-colors resize-none"
+                  className="w-full px-6 py-4 bg-neutral-900 dark:bg-neutral-900 border border-neutral-800 text-white placeholder-neutral-500 focus:outline-hidden focus:border-white transition-colors resize-none"
                 />
               </div>
 

@@ -26,11 +26,11 @@ export default function ProductCard({ name, price, image, buttonText, index }: P
       className="group relative"
     >
       <motion.div
-        className="relative overflow-hidden bg-neutral-900 dark:bg-neutral-800 aspect-[3/4]"
+        className="relative overflow-hidden bg-neutral-900 dark:bg-neutral-800 aspect-3/4"
         whileHover={{ scale: 1.02 }}
         transition={{ duration: 0.4 }}
       >
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
         <Image
           src={image}

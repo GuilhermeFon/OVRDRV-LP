@@ -161,7 +161,7 @@ function HeroParallax({ t }: HeroProps) {
         )}
 
         {/* Overlay para garantir contraste do texto sobre o vídeo (WCAG AA). */}
-        <div className="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/40 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 z-10 bg-linear-to-t from-black via-black/40 to-transparent pointer-events-none" />
 
         <HeroContent t={t} scrollYProgress={scrollYProgress} />
         <ScrollIndicator scrollYProgress={scrollYProgress} />

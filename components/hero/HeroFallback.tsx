@@ -34,7 +34,7 @@ export default function HeroFallback({ t }: HeroFallbackProps) {
         sizes="100vw"
         className="object-cover"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+      <div className="absolute inset-0 bg-linear-to-t from-black via-black/40 to-transparent" />
 
       <div className="relative z-10 min-h-screen flex flex-col justify-center items-center text-center px-6">
         <h1 className="text-[clamp(4rem,12vw,12rem)] font-black tracking-tighter leading-none text-white">

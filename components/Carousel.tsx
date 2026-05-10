@@ -45,7 +45,7 @@ export default function Carousel({ t }: CarouselProps) {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="relative aspect-[16/9] overflow-hidden"
+          className="relative aspect-video overflow-hidden"
         >
           {images.map((image, index) => (
             <motion.div
