@@ -103,7 +103,7 @@ function HeroParallax({ t }: HeroProps) {
         {useScrollControl ? (
           // ATENÇÃO: NÃO usar `autoPlay` — `currentTime` é manipulado
           // manualmente pelo useScrollVideo (proporcional ao scroll).
-          <video
+          (<video
             ref={videoRef}
             className="absolute inset-0 w-full h-full object-cover"
             muted
@@ -117,7 +117,7 @@ function HeroParallax({ t }: HeroProps) {
           >
             <source src={VIDEO_WEBM} type="video/webm" />
             <source src={VIDEO_MP4} type="video/mp4" />
-          </video>
+          </video>)
         ) : (
           <motion.video
             ref={videoRef}
