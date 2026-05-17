@@ -1,39 +1,39 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'OVRDRV - SEM LIMITE | Luxury Automotive Streetwear',
-  description: 'Streetwear de luxo inspirado na cultura automotiva de alta performance. Coleção exclusiva Drop 01.',
-  keywords: ['streetwear', 'luxury', 'automotive', 'fashion', 'performance', 'exclusive'],
+  title: 'OVRDRV — SEM LIMITE | Streetwear Automotivo',
+  description:
+    'Streetwear de luxo inspirado na cultura automotiva real. DROP 01 — Illegal Racing Club. Edição numerada, peças limitadas.',
+  keywords: [
+    'streetwear',
+    'automotivo',
+    'ovrdrv',
+    'overdrive wear',
+    'drop 01',
+    'illegal racing club',
+    'tuning',
+    'carspotting',
+  ],
   authors: [{ name: 'OVRDRV' }],
+  icons: {
+    icon: [
+      { url: '/logo/favicon-white.ico', media: '(prefers-color-scheme: dark)' },
+      { url: '/logo/favicon-black.ico', media: '(prefers-color-scheme: light)' },
+    ],
+  },
   openGraph: {
-    title: 'OVRDRV - SEM LIMITE',
-    description: 'Luxury streetwear inspired by high-performance automotive culture',
+    title: 'OVRDRV — SEM LIMITE',
+    description: 'Luxury streetwear inspired by Brazilian street-car culture.',
     type: 'website',
     locale: 'pt_BR',
     alternateLocale: ['en_US'],
     siteName: 'OVRDRV',
-    images: [
-      {
-        url: 'https://bolt.new/static/og_default.png',
-        width: 1200,
-        height: 630,
-        alt: 'OVRDRV',
-      },
-    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'OVRDRV - SEM LIMITE',
-    description: 'Luxury streetwear inspired by high-performance automotive culture',
-    images: [
-      {
-        url: 'https://bolt.new/static/og_default.png',
-      },
-    ],
+    title: 'OVRDRV — SEM LIMITE',
+    description: 'Luxury streetwear inspired by Brazilian street-car culture.',
   },
 };
 
@@ -45,18 +45,21 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <head>
-        {/* Preload do vídeo da hero — LCP crítico.
-            `as="video"` faz o browser reservar conexão e começar o download
-            antes do React montar. Mantenha somente UM dos formatos no preload
-            (o que tem maior compatibilidade); o outro fica como <source>. */}
         <link
           rel="preload"
           as="video"
           href="/videos/hero-garage.mp4"
           type="video/mp4"
         />
+        <link
+          rel="preload"
+          as="font"
+          href="/fonts/Oxanium-VariableFont_wght.ttf"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
       </head>
-      <body className={inter.className}>{children}</body>
+      <body>{children}</body>
     </html>
   );
 }

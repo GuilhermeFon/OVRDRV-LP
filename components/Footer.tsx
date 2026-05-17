@@ -1,12 +1,11 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { Mail, Send } from 'lucide-react';
 import { useState } from 'react';
 import type { Translations } from '@/lib/i18n';
 
-// Inline Instagram glyph: lucide-react v1 removed brand icons over trademark
-// concerns. Matches the lucide stroke style (currentColor, width 2).
 function Instagram({ className }: { className?: string }) {
   return (
     <svg
@@ -31,150 +30,191 @@ interface FooterProps {
 }
 
 export default function Footer({ t }: FooterProps) {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [status, setStatus] = useState<'idle' | 'sending' | 'ok'>('idle');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    setSubmitStatus('success');
-    setIsSubmitting(false);
+    setStatus('sending');
+    await new Promise((r) => setTimeout(r, 900));
+    setStatus('ok');
     setFormData({ name: '', email: '', message: '' });
-
-    setTimeout(() => setSubmitStatus('idle'), 3000);
+    setTimeout(() => setStatus('idle'), 2400);
   };
 
+  const fieldClass =
+    'w-full px-[18px] py-3.5 bg-[var(--ovr-bg-soft)] border border-[var(--ovr-line)] text-white placeholder:text-[var(--ovr-fg-dim)] text-sm focus:outline-none focus:border-[var(--ovr-purple-500)] transition-colors duration-200';
+
   return (
-    <footer id="contact" className="bg-black dark:bg-black text-white py-24 px-4">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+    <footer
+      id="contact"
+      className="relative overflow-hidden text-white"
+      style={{ background: '#000', padding: '96px 24px 32px' }}
+    >
+      <div
+        aria-hidden="true"
+        className="absolute pointer-events-none"
+        style={{
+          right: '-10%',
+          bottom: '-30%',
+          width: 600,
+          height: 600,
+          background:
+            'radial-gradient(circle, rgba(153,0,255,0.18), transparent 60%)',
+        }}
+      />
+
+      <div className="relative max-w-[1280px] mx-auto grid gap-16 grid-cols-1 lg:grid-cols-2">
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <h2
+            className="text-[clamp(2.5rem,6vw,5rem)] font-bold tracking-[-0.04em] leading-[0.9] uppercase m-0 mb-2"
+            style={{ fontFamily: 'var(--font-display)' }}
           >
-            <h2 className="text-5xl md:text-7xl font-black tracking-tighter mb-4">
-              {t.footer.title}
-            </h2>
-            <p className="text-neutral-400 text-lg mb-12">{t.footer.subtitle}</p>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <input
-                  type="text"
-                  placeholder={t.footer.name}
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  required
-                  className="w-full px-6 py-4 bg-neutral-900 dark:bg-neutral-900 border border-neutral-800 text-white placeholder-neutral-500 focus:outline-hidden focus:border-white transition-colors"
-                />
-              </div>
-
-              <div>
-                <input
-                  type="email"
-                  placeholder={t.footer.email}
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  required
-                  className="w-full px-6 py-4 bg-neutral-900 dark:bg-neutral-900 border border-neutral-800 text-white placeholder-neutral-500 focus:outline-hidden focus:border-white transition-colors"
-                />
-              </div>
-
-              <div>
-                <textarea
-                  placeholder={t.footer.message}
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  required
-                  rows={5}
-                  className="w-full px-6 py-4 bg-neutral-900 dark:bg-neutral-900 border border-neutral-800 text-white placeholder-neutral-500 focus:outline-hidden focus:border-white transition-colors resize-none"
-                />
-              </div>
-
-              <motion.button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full py-4 bg-white text-black font-bold text-sm tracking-widest hover:bg-neutral-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
-                whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
-              >
-                {isSubmitting ? (
-                  'ENVIANDO...'
-                ) : submitStatus === 'success' ? (
-                  '✓ ENVIADO!'
-                ) : (
-                  <>
-                    {t.footer.send}
-                    <Send className="w-4 h-4" />
-                  </>
-                )}
-              </motion.button>
-            </form>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="flex flex-col justify-center space-y-8"
+            {t.footer.title}
+          </h2>
+          <p
+            className="text-[var(--ovr-fg-mute)] text-base mb-9"
+            style={{ fontFamily: 'var(--font-body)' }}
           >
-            <div>
-              <h3 className="text-3xl font-black tracking-tighter mb-8">OVRDRV</h3>
+            {t.footer.subtitle}
+          </p>
 
-              <div className="space-y-6">
-                <motion.a
-                  href="mailto:contato@ovrdrv.com"
-                  className="flex items-center gap-4 text-lg group"
-                  whileHover={{ x: 10 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Mail className="w-6 h-6 text-neutral-400 group-hover:text-white transition-colors" />
-                  <div>
-                    <p className="text-sm text-neutral-500">{t.footer.emailLabel}</p>
-                    <p className="text-white">contato@ovrdrv.com</p>
-                  </div>
-                </motion.a>
-
-                <motion.a
-                  href="https://instagram.com/ovrdrv"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-4 text-lg group"
-                  whileHover={{ x: 10 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Instagram className="w-6 h-6 text-neutral-400 group-hover:text-white transition-colors" />
-                  <div>
-                    <p className="text-sm text-neutral-500">{t.footer.instagramLabel}</p>
-                    <p className="text-white">@ovrdrv</p>
-                  </div>
-                </motion.a>
-              </div>
-            </div>
-          </motion.div>
-        </div>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
+            <input
+              type="text"
+              placeholder={t.footer.name}
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              required
+              className={fieldClass}
+            />
+            <input
+              type="email"
+              placeholder={t.footer.email}
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              required
+              className={fieldClass}
+            />
+            <textarea
+              placeholder={t.footer.message}
+              value={formData.message}
+              onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+              required
+              rows={5}
+              className={`${fieldClass} resize-none`}
+            />
+            <motion.button
+              type="submit"
+              disabled={status !== 'idle'}
+              whileHover={{ scale: status === 'idle' ? 1.02 : 1 }}
+              whileTap={{ scale: status === 'idle' ? 0.97 : 1 }}
+              className="py-4 cursor-pointer text-[13px] font-bold tracking-[0.3em] uppercase flex items-center justify-center gap-2 transition-colors duration-300 disabled:cursor-default"
+              style={{
+                fontFamily: 'var(--font-body)',
+                background: status === 'ok' ? 'var(--ovr-purple-500)' : '#fff',
+                color: status === 'ok' ? '#fff' : '#000',
+              }}
+            >
+              {status === 'sending' ? (
+                t.footer.sending
+              ) : status === 'ok' ? (
+                t.footer.sent
+              ) : (
+                <>
+                  {t.footer.send}
+                  <Send className="w-4 h-4" />
+                </>
+              )}
+            </motion.button>
+          </form>
+        </motion.div>
 
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+          initial={{ opacity: 0, x: 30 }}
+          whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="mt-24 pt-8 border-t border-neutral-800 text-center text-neutral-500 text-sm"
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="flex flex-col justify-center gap-9"
         >
-          <p>{t.footer.rights}</p>
+          <Image
+            src="/logo/ovrdrv-barcode-white.png"
+            alt="OVRDRV"
+            width={220}
+            height={42}
+            className="w-[220px] h-auto self-start"
+          />
+
+          <div className="flex flex-col gap-5">
+            <motion.a
+              href="mailto:contato@ovrdrv.com"
+              whileHover={{ x: 8 }}
+              transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              className="flex items-center gap-3.5 text-white group"
+            >
+              <Mail className="w-[22px] h-[22px] text-[var(--ovr-fg-mute)] group-hover:text-white transition-colors" />
+              <div>
+                <div
+                  className="text-[11px] font-semibold tracking-[0.22em] uppercase text-[var(--ovr-fg-dim)]"
+                  style={{ fontFamily: 'var(--font-mono)' }}
+                >
+                  {t.footer.emailLabel}
+                </div>
+                <div className="text-[17px]">contato@ovrdrv.com</div>
+              </div>
+            </motion.a>
+
+            <motion.a
+              href="https://instagram.com/ovrdrv"
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ x: 8 }}
+              transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              className="flex items-center gap-3.5 text-white group"
+            >
+              <Instagram className="w-[22px] h-[22px] text-[var(--ovr-fg-mute)] group-hover:text-white transition-colors" />
+              <div>
+                <div
+                  className="text-[11px] font-semibold tracking-[0.22em] uppercase text-[var(--ovr-fg-dim)]"
+                  style={{ fontFamily: 'var(--font-mono)' }}
+                >
+                  {t.footer.instagramLabel}
+                </div>
+                <div className="text-[17px]">@ovrdrv</div>
+              </div>
+            </motion.a>
+
+            <div
+              aria-hidden="true"
+              className="ovr-script mt-2 text-[36px]"
+              style={{
+                transform: 'rotate(-4deg)',
+                fontFamily: 'var(--font-script)',
+              }}
+            >
+              {t.footer.signature}
+            </div>
+          </div>
         </motion.div>
       </div>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, delay: 0.3 }}
+        className="relative max-w-[1280px] mx-auto mt-[72px] pt-6 border-t border-[var(--ovr-line)] flex flex-wrap justify-between items-center gap-4 text-[11px] tracking-[0.22em] uppercase text-[var(--ovr-fg-dim)]"
+        style={{ fontFamily: 'var(--font-mono)' }}
+      >
+        <span>{t.footer.rights}</span>
+        <span>{t.footer.cnpj}</span>
+        <span>{t.footer.location}</span>
+      </motion.div>
     </footer>
   );
 }

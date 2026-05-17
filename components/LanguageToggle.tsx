@@ -9,32 +9,27 @@ interface LanguageToggleProps {
 }
 
 export default function LanguageToggle({ language, setLanguage }: LanguageToggleProps) {
+  const langs: Language[] = ['pt', 'en'];
   return (
-    <div className="flex items-center gap-1 bg-neutral-900 dark:bg-neutral-800 rounded-full p-1">
-      <motion.button
-        onClick={() => setLanguage('pt')}
-        className={`px-3 py-1 rounded-full text-sm font-semibold transition-colors ${
-          language === 'pt'
-            ? 'bg-white text-black dark:bg-white dark:text-black'
-            : 'text-white dark:text-neutral-400 hover:text-neutral-300'
-        }`}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        PT
-      </motion.button>
-      <motion.button
-        onClick={() => setLanguage('en')}
-        className={`px-3 py-1 rounded-full text-sm font-semibold transition-colors ${
-          language === 'en'
-            ? 'bg-white text-black dark:bg-white dark:text-black'
-            : 'text-white dark:text-neutral-400 hover:text-neutral-300'
-        }`}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        EN
-      </motion.button>
+    <div className="flex items-center gap-1 bg-[var(--ovr-bg-elev)] rounded-full p-[3px]">
+      {langs.map((l) => (
+        <motion.button
+          key={l}
+          type="button"
+          onClick={() => setLanguage(l)}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          aria-pressed={language === l}
+          className={`px-3 py-1 rounded-full text-[11px] font-bold tracking-[0.18em] uppercase transition-colors ${
+            language === l
+              ? 'bg-white text-black'
+              : 'text-[var(--ovr-fg-mute)] hover:text-white'
+          }`}
+          style={{ fontFamily: 'var(--font-mono)' }}
+        >
+          {l}
+        </motion.button>
+      ))}
     </div>
   );
 }

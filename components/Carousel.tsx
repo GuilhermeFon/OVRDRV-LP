@@ -10,10 +10,10 @@ interface CarouselProps {
 }
 
 const images = [
-  'https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg?auto=compress&cs=tinysrgb&w=1200',
-  'https://images.pexels.com/photos/3764984/pexels-photo-3764984.jpeg?auto=compress&cs=tinysrgb&w=1200',
-  'https://images.pexels.com/photos/3156482/pexels-photo-3156482.jpeg?auto=compress&cs=tinysrgb&w=1200',
-  'https://images.pexels.com/photos/1335077/pexels-photo-1335077.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  '/images/lookbook/site-model-irc.png',
+  '/images/lookbook/post-001.png',
+  '/images/lookbook/post-002.png',
+  '/images/lookbook/post-003.png',
 ];
 
 export default function Carousel({ t }: CarouselProps) {
@@ -22,62 +22,90 @@ export default function Carousel({ t }: CarouselProps) {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % images.length);
-    }, 4000);
-
+    }, 4500);
     return () => clearInterval(timer);
   }, []);
 
   return (
-    <section className="py-24 px-4 bg-neutral-950 dark:bg-neutral-950">
-      <div className="max-w-7xl mx-auto">
+    <section
+      id="lookbook"
+      className="py-24 px-4 sm:px-6"
+      style={{ background: 'var(--ovr-bg-soft)' }}
+    >
+      <div className="max-w-[1280px] mx-auto">
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="ovr-eyebrow text-[12px] tracking-[0.4em] mb-3 text-center"
+        >
+          {t.carousel.eyebrow}
+        </motion.p>
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-6xl md:text-8xl font-black tracking-tighter text-white text-center mb-16"
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="text-[clamp(3rem,8vw,7rem)] font-bold tracking-[-0.04em] leading-[0.9] uppercase text-white text-center m-0 mb-14"
+          style={{ fontFamily: 'var(--font-display)' }}
         >
           {t.carousel.title}
         </motion.h2>
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
+          initial={{ opacity: 0, scale: 0.97 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="relative aspect-video overflow-hidden"
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="relative aspect-video overflow-hidden bg-black"
         >
           {images.map((image, index) => (
-            <motion.div
+            <div
               key={image}
               className="absolute inset-0"
-              initial={{ opacity: 0, scale: 1.1 }}
-              animate={{
+              style={{
                 opacity: index === currentIndex ? 1 : 0,
-                scale: index === currentIndex ? 1 : 1.1,
+                transform: index === currentIndex ? 'scale(1)' : 'scale(1.08)',
+                transition:
+                  'opacity 700ms cubic-bezier(0.22, 1, 0.36, 1), transform 7000ms linear',
               }}
-              transition={{ duration: 0.7 }}
             >
               <Image
                 src={image}
-                alt={`Lifestyle ${index + 1}`}
+                alt={`OVRDRV Lookbook ${index + 1}`}
                 fill
-                className="object-cover"
                 sizes="(max-width: 1280px) 100vw, 1280px"
+                className="object-cover"
               />
-            </motion.div>
+            </div>
           ))}
 
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+          <div
+            className="absolute top-5 left-5 text-[10px] tracking-[0.3em] uppercase text-white/70 px-2 py-1"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              border: '1px solid rgba(255,255,255,0.3)',
+            }}
+          >
+            REC · {String(currentIndex + 1).padStart(2, '0')} /{' '}
+            {String(images.length).padStart(2, '0')}
+          </div>
+
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
             {images.map((_, index) => (
               <button
                 key={index}
+                type="button"
                 onClick={() => setCurrentIndex(index)}
-                className={`w-2 h-2 rounded-full transition-all ${
-                  index === currentIndex
-                    ? 'w-8 bg-white'
-                    : 'bg-white/40 hover:bg-white/60'
-                }`}
+                aria-label={`Slide ${index + 1}`}
+                className="h-1 transition-all duration-300"
+                style={{
+                  width: index === currentIndex ? 28 : 8,
+                  background:
+                    index === currentIndex ? '#fff' : 'rgba(255,255,255,0.4)',
+                  transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)',
+                }}
               />
             ))}
           </div>

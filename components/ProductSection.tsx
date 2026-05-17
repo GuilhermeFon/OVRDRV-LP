@@ -2,72 +2,61 @@
 
 import { motion } from 'framer-motion';
 import ProductCard from './ProductCard';
-import type { Translations } from '@/lib/i18n';
+import { products, type Language, type Translations } from '@/lib/i18n';
 
 interface ProductSectionProps {
   t: Translations;
+  language: Language;
 }
 
-const products = [
-  {
-    name: 'Midnight Turbo',
-    price: 'R$ 149,90',
-    image: 'https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=800',
-  },
-  {
-    name: 'Velocity Black',
-    price: 'R$ 149,90',
-    image: 'https://images.pexels.com/photos/1619654/pexels-photo-1619654.jpeg?auto=compress&cs=tinysrgb&w=800',
-  },
-  {
-    name: 'Carbon Drift',
-    price: 'R$ 149,90',
-    image: 'https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg?auto=compress&cs=tinysrgb&w=800',
-  },
-  {
-    name: 'Overdrive GT',
-    price: 'R$ 149,90',
-    image: 'https://images.pexels.com/photos/1545743/pexels-photo-1545743.jpeg?auto=compress&cs=tinysrgb&w=800',
-  },
-];
-
-export default function ProductSection({ t }: ProductSectionProps) {
+export default function ProductSection({ t, language }: ProductSectionProps) {
   return (
-    <section id="products" className="py-24 px-4 bg-black dark:bg-black">
-      <div className="max-w-7xl mx-auto">
+    <section
+      id="products"
+      className="py-24 px-4 sm:px-6 bg-black"
+    >
+      <div className="max-w-[1280px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           className="text-center mb-16"
         >
           <motion.p
-            className="text-sm tracking-[0.3em] text-neutral-400 mb-4"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
+            className="ovr-eyebrow text-[12px] tracking-[0.4em] mb-3"
           >
-            {t.products.subtitle}
+            {t.products.eyebrow}
           </motion.p>
           <motion.h2
-            className="text-6xl md:text-8xl font-black tracking-tighter text-white dark:text-white"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="text-[clamp(3rem,8vw,7rem)] font-bold tracking-[-0.04em] leading-[0.9] uppercase text-white m-0"
+            style={{ fontFamily: 'var(--font-display)' }}
           >
             {t.products.title}
           </motion.h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div
+          className="grid gap-7"
+          style={{
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+          }}
+        >
           {products.map((product, index) => (
             <ProductCard
               key={product.name}
               name={product.name}
               price={product.price}
+              meta={product.meta[language]}
+              serial={product.serial}
               image={product.image}
               buttonText={t.products.button}
               index={index}

@@ -11,14 +11,18 @@ export default function ScrollIndicator({ scrollYProgress }: ScrollIndicatorProp
 
   return (
     <motion.div
-      style={{ opacity }}
-      className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/60 z-20 pointer-events-none"
+      style={{ opacity, fontFamily: 'var(--font-mono)' }}
+      className="absolute bottom-7 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-white/60 z-20 pointer-events-none uppercase"
     >
-      <span className="text-xs tracking-widest">SCROLL</span>
+      <span className="text-[10px] tracking-[0.4em] font-semibold">SCROLL</span>
       <motion.div
-        animate={{ y: [0, 8, 0] }}
-        transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
-        className="w-px h-8 bg-white/60"
+        animate={{ scaleY: [0.6, 1, 0.6], opacity: [0.6, 1, 0.6] }}
+        transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}
+        className="w-px h-9 origin-top"
+        style={{
+          background:
+            'linear-gradient(to bottom, rgba(255,255,255,0.6), transparent)',
+        }}
       />
     </motion.div>
   );

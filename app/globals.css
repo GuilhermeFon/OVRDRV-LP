@@ -1,12 +1,162 @@
 @import 'tailwindcss';
 
+/* =========================================================================
+   OVRDRV — Design tokens
+   Black-on-black canvas · neon purple ignition · yellow spark · hard edges
+   Source: ovrdrv-design-system/colors_and_type.css
+   ========================================================================= */
+
+@font-face {
+  font-family: 'Oxanium';
+  src: url('/fonts/Oxanium-VariableFont_wght.ttf') format('truetype-variations');
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Abuget';
+  src: url('/fonts/Abuget.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Russo One';
+  src: url('/fonts/RussoOne-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Breakaway';
+  src: url('/fonts/Breakaway.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --ovr-bg: #000000;
+  --ovr-bg-soft: #0a0a0a;
+  --ovr-bg-elev: #141414;
+  --ovr-bg-elev-2: #1c1c1c;
+  --ovr-line: #262626;
+  --ovr-line-strong: #3a3a3a;
+
+  --ovr-fg: #ffffff;
+  --ovr-fg-mute: #b3b3b3;
+  --ovr-fg-dim: #6e6e6e;
+  --ovr-fg-faint: #3a3a3a;
+
+  --ovr-purple-50: #f5e9ff;
+  --ovr-purple-100: #e7ccff;
+  --ovr-purple-200: #cf99ff;
+  --ovr-purple-300: #b566ff;
+  --ovr-purple-400: #a233ff;
+  --ovr-purple-500: #9900ff;
+  --ovr-purple-600: #7a00cc;
+  --ovr-purple-700: #5c0099;
+  --ovr-purple-800: #3d0066;
+  --ovr-purple-900: #1f0033;
+  --ovr-purple: var(--ovr-purple-500);
+
+  --ovr-magenta-500: #e91ec3;
+  --ovr-yellow: #ffd60a;
+  --ovr-cream: #ece6d6;
+  --ovr-red: #ff2d2d;
+
+  --glow-purple: 0 0 18px rgba(153, 0, 255, 0.55), 0 0 38px rgba(153, 0, 255, 0.28);
+  --glow-purple-sm: 0 0 8px rgba(153, 0, 255, 0.65);
+
+  --font-display: 'Oxanium', 'Inter', system-ui, sans-serif;
+  --font-heading: 'Oxanium', 'Inter', system-ui, sans-serif;
+  --font-body: 'Oxanium', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Oxanium', ui-monospace, 'JetBrains Mono', monospace;
+  --font-script: 'Abuget', 'Caveat', cursive;
+  --font-supporting: 'Russo One', 'Oxanium', system-ui, sans-serif;
+
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-snap: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-base: 220ms;
+  --dur-slow: 500ms;
+}
+
+@theme inline {
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-mono);
+  --font-display: var(--font-display);
+  --font-script: var(--font-script);
+  --font-supporting: var(--font-supporting);
+
+  --color-ovr-bg: var(--ovr-bg);
+  --color-ovr-bg-soft: var(--ovr-bg-soft);
+  --color-ovr-bg-elev: var(--ovr-bg-elev);
+  --color-ovr-line: var(--ovr-line);
+  --color-ovr-line-strong: var(--ovr-line-strong);
+  --color-ovr-fg: var(--ovr-fg);
+  --color-ovr-fg-mute: var(--ovr-fg-mute);
+  --color-ovr-fg-dim: var(--ovr-fg-dim);
+  --color-ovr-purple: var(--ovr-purple-500);
+  --color-ovr-purple-300: var(--ovr-purple-300);
+  --color-ovr-purple-400: var(--ovr-purple-400);
+  --color-ovr-purple-600: var(--ovr-purple-600);
+  --color-ovr-yellow: var(--ovr-yellow);
+  --color-ovr-cream: var(--ovr-cream);
+}
+
 @layer base {
+  html {
+    background: var(--ovr-bg);
+    color: var(--ovr-fg);
+    font-family: var(--font-body);
+  }
   body {
-    background: black;
-    color: white;
-    font-feature-settings: 'kern' 1;
+    background: var(--ovr-bg);
+    color: var(--ovr-fg);
+    font-family: var(--font-body);
+    font-feature-settings: 'kern' 1, 'ss01' 1, 'tnum' 1;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+  ::selection {
+    background: var(--ovr-purple-500);
+    color: var(--ovr-fg);
+  }
+  :focus-visible {
+    outline: 2px solid var(--ovr-purple-400);
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  .ovr-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ovr-fg-mute);
+  }
+  .ovr-script {
+    font-family: var(--font-script);
+    font-style: italic;
+    color: var(--ovr-purple-300);
+    text-shadow: var(--glow-purple-sm);
+  }
+  .ovr-glow-purple {
+    text-shadow: var(--glow-purple);
+  }
+  .ovr-navlink {
+    color: #fff;
+    transition: color 200ms var(--ease-out-quint),
+      text-shadow 200ms var(--ease-out-quint);
+  }
+  .ovr-navlink:hover {
+    color: var(--ovr-purple-300);
+    text-shadow: var(--glow-purple-sm);
   }
 }

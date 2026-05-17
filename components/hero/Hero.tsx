@@ -156,24 +156,26 @@ export default function Hero({ t }: HeroProps) {
         aria-label="OVRDRV — SEM LIMITE"
         className="relative min-h-screen w-full overflow-hidden bg-black"
       >
-        <div className="absolute inset-0 bg-linear-to-t from-black via-black/40 to-transparent pointer-events-none" />
-        <div className="relative z-10 min-h-screen flex flex-col justify-center items-center text-center px-6">
-          <h1 className="text-[clamp(4rem,12vw,12rem)] font-black tracking-tighter leading-none text-white">
-            OVRDRV
-          </h1>
-          <h2 className="text-2xl md:text-4xl font-black tracking-[0.3em] mt-4 text-white">
-            {t.hero.slogan}
-          </h2>
-          <p className="mt-6 max-w-md text-base md:text-lg text-white/80">
-            {t.hero.subtitle}
-          </p>
-          <a
-            href="#products"
-            className="mt-10 inline-block px-8 py-4 border-2 border-white text-white font-bold tracking-widest hover:bg-white hover:text-black transition-colors"
-          >
-            {t.hero.cta}
-          </a>
-        </div>
+        <div
+          aria-hidden="true"
+          className="absolute inset-0"
+          style={{
+            backgroundImage: "url('/images/products/banner-1.png')",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: 0.55,
+            filter: 'saturate(1.05) contrast(1.1)',
+          }}
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              'linear-gradient(to top, #000 0%, rgba(0,0,0,0.4) 50%, transparent 100%), radial-gradient(circle at 50% 80%, rgba(153,0,255,0.18), transparent 60%)',
+          }}
+        />
+        <HeroContent t={t} />
       </section>
     );
   }
@@ -218,7 +220,24 @@ export default function Hero({ t }: HeroProps) {
           />
         )}
 
-        <div className="absolute inset-0 z-10 bg-linear-to-t from-black via-black/40 to-transparent pointer-events-none" />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 z-10 pointer-events-none"
+          style={{
+            background:
+              'linear-gradient(to top, #000 0%, rgba(0,0,0,0.4) 50%, transparent 100%), radial-gradient(circle at 50% 80%, rgba(153,0,255,0.18), transparent 60%)',
+          }}
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 z-10 pointer-events-none mix-blend-screen"
+          style={{
+            opacity: 0.08,
+            backgroundImage:
+              'radial-gradient(rgba(255,255,255,0.6) 1px, transparent 1px)',
+            backgroundSize: '3px 3px',
+          }}
+        />
 
         <HeroContent t={t} />
         <ScrollIndicator scrollYProgress={scrollYProgress} />
