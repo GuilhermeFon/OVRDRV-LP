@@ -220,7 +220,7 @@ export default function Hero({ t }: HeroProps) {
 
         <div className="absolute inset-0 z-10 bg-linear-to-t from-black via-black/40 to-transparent pointer-events-none" />
 
-        <HeroContent t={t} scrollYProgress={scrollYProgress} />
+        <HeroContent t={t} />
         <ScrollIndicator scrollYProgress={scrollYProgress} />
       </div>
     </section>

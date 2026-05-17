@@ -1,28 +1,20 @@
 'use client';
 
-import { motion, useTransform, type MotionValue } from 'framer-motion';
+import { motion } from 'framer-motion';
 import type { Translations } from '@/lib/i18n';
 
 interface HeroContentProps {
   t: Translations;
-  scrollYProgress: MotionValue<number>;
 }
 
-export default function HeroContent({ t, scrollYProgress }: HeroContentProps) {
-  // Conteúdo faz fade-out + slide-up nos primeiros 50% do scroll do wrapper.
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const y = useTransform(scrollYProgress, [0, 0.5], [0, -50]);
-
+export default function HeroContent({ t }: HeroContentProps) {
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
-    <motion.div
-      style={{ opacity, y }}
-      className="relative z-10 h-screen flex flex-col justify-center items-center text-center px-6"
-    >
+    <div className="relative z-10 h-screen flex flex-col justify-center items-center text-center px-6">
       <motion.h1
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -62,6 +54,6 @@ export default function HeroContent({ t, scrollYProgress }: HeroContentProps) {
       >
         {t.hero.cta}
       </motion.a>
-    </motion.div>
+    </div>
   );
 }
