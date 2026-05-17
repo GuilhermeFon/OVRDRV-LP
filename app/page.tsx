@@ -4,6 +4,7 @@ import { useState, useSyncExternalStore } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Hero from '@/components/hero/Hero';
+import Manifesto from '@/components/Manifesto';
 import ProductSection from '@/components/ProductSection';
 import Carousel from '@/components/Carousel';
 import Ticker from '@/components/Ticker';
@@ -72,6 +73,14 @@ export default function Home() {
           <div className="hidden md:flex items-center gap-7">
             <button
               type="button"
+              onClick={() => scrollToSection('manifesto')}
+              className="ovr-navlink cursor-pointer text-[12px] font-semibold tracking-[0.22em] uppercase"
+              style={{ fontFamily: 'var(--font-mono)' }}
+            >
+              {t.nav.manifesto}
+            </button>
+            <button
+              type="button"
               onClick={() => scrollToSection('products')}
               className="ovr-navlink cursor-pointer text-[12px] font-semibold tracking-[0.22em] uppercase"
               style={{ fontFamily: 'var(--font-mono)' }}
@@ -103,6 +112,7 @@ export default function Home() {
       <main>
         <Hero t={t} />
         <Ticker variant="invert" />
+        <Manifesto t={t} />
         <ProductSection t={t} language={language} />
         <Carousel t={t} />
         <Ticker variant="dark" />

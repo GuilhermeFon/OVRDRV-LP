@@ -2,6 +2,7 @@ export const translations = {
   pt: {
     nav: {
       produtos: 'PRODUTOS',
+      manifesto: 'MANIFESTO',
       lookbook: 'LOOKBOOK',
       contato: 'CONTATO',
     },
@@ -13,6 +14,23 @@ export const translations = {
       cta: 'Explorar Coleção',
       ignite: 'ignite ?',
       scroll: 'SCROLL',
+    },
+    manifesto: {
+      eyebrow: '— MANIFESTO —',
+      title: 'NÃO É HYPE.\nÉ CULTURA.',
+      lead:
+        'OVRDRV nasce no escapamento, no posto às 2 da manhã, na rua que vive de motor turbinado. Streetwear pra quem mora na cena — não pra quem vê só por foto.',
+      body:
+        'Cada drop é numerado à mão. Edição limitada, sem reposição. Tuning, carspotting, hypercar — tudo entra no algodão e sai com assinatura.',
+      mockupLabel: 'ILLEGAL RACING CLUB',
+      mockupCaption: 'MOCKUP · OVERSIZED TEE',
+      pillars: [
+        { value: '001/100', label: 'Numerada à mão' },
+        { value: 'DROP', label: 'Sem reposição' },
+        { value: 'BR · SP', label: 'Cultura real' },
+      ],
+      cta: 'Ver Drop 01',
+      signature: 'Sem Limite.',
     },
     products: {
       eyebrow: 'COLEÇÃO EXCLUSIVA',
@@ -43,6 +61,7 @@ export const translations = {
   en: {
     nav: {
       produtos: 'PRODUCTS',
+      manifesto: 'MANIFESTO',
       lookbook: 'LOOKBOOK',
       contato: 'CONTACT',
     },
@@ -54,6 +73,23 @@ export const translations = {
       cta: 'Explore Collection',
       ignite: 'ignite ?',
       scroll: 'SCROLL',
+    },
+    manifesto: {
+      eyebrow: '— MANIFESTO —',
+      title: "NOT HYPE.\nIT'S CULTURE.",
+      lead:
+        'OVRDRV starts at the exhaust, at the 2am gas station, on the streets that run on turbocharged engines. Streetwear for whoever lives the scene — not whoever sees it through a feed.',
+      body:
+        'Every drop is hand-numbered. Limited edition, no restocks. Tuning, carspotting, hypercars — it all goes into the cotton and comes out signed.',
+      mockupLabel: 'ILLEGAL RACING CLUB',
+      mockupCaption: 'MOCKUP · OVERSIZED TEE',
+      pillars: [
+        { value: '001/100', label: 'Hand-numbered' },
+        { value: 'DROP', label: 'No restocks' },
+        { value: 'BR · SP', label: 'Real culture' },
+      ],
+      cta: 'See Drop 01',
+      signature: 'Sem Limite.',
     },
     products: {
       eyebrow: 'EXCLUSIVE COLLECTION',
