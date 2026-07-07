@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import type { Translations } from '@/lib/i18n';
+import { track } from '@/lib/analytics';
 
 interface HeroContentProps {
   t: Translations;
@@ -12,6 +13,7 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 export default function HeroContent({ t }: HeroContentProps) {
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
+    track('cta_click', { location: 'hero', label: t.hero.cta });
     document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
   };
 

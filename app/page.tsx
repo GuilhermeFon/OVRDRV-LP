@@ -12,6 +12,7 @@ import Ticker from '@/components/Ticker';
 import Footer from '@/components/Footer';
 import LanguageToggle from '@/components/LanguageToggle';
 import { translations, type Language } from '@/lib/i18n';
+import { track } from '@/lib/analytics';
 
 const subscribeScrollResize = (callback: () => void) => {
   window.addEventListener('scroll', callback, { passive: true });
@@ -38,6 +39,7 @@ export default function Home() {
   const t = translations[language];
 
   const scrollToSection = (id: string) => {
+    track('nav_click', { target: id });
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 

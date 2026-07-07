@@ -44,21 +44,17 @@ export default function ProductSection({ t, language }: ProductSectionProps) {
           </motion.h2>
         </motion.div>
 
-        <div
-          className="grid gap-7"
-          style={{
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          }}
-        >
+        <div className="grid gap-7 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {products.map((product, index) => (
             <ProductCard
               key={product.name}
               name={product.name}
-              price={product.price}
               meta={product.meta[language]}
               serial={product.serial}
-              image={product.image}
+              back={product.back}
               buttonText={t.products.button}
+              colorLabels={t.products.colors}
+              viewLabels={t.products.view}
               index={index}
             />
           ))}

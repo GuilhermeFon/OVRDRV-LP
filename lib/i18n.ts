@@ -37,6 +37,8 @@ export const translations = {
       eyebrow: 'COLEÇÃO EXCLUSIVA',
       title: 'DROP 01',
       button: 'PRÉ-SALVAR',
+      colors: { black: 'Preta', white: 'Branca' },
+      view: { back: 'Costas', front: 'Frente' },
     },
     vipList: {
       eyebrow: '— LISTA VIP · DROP 01 —',
@@ -136,6 +138,8 @@ export const translations = {
       eyebrow: 'EXCLUSIVE COLLECTION',
       title: 'DROP 01',
       button: 'PRE-SAVE',
+      colors: { black: 'Black', white: 'White' },
+      view: { back: 'Back', front: 'Front' },
     },
     vipList: {
       eyebrow: '— VIP LIST · DROP 01 —',
@@ -202,42 +206,76 @@ export const translations = {
 export type Language = keyof typeof translations;
 export type Translations = typeof translations.pt;
 
+export type Colorway = 'black' | 'white';
+
 export interface Product {
   name: string;
-  price: string;
   meta: { pt: string; en: string };
   serial: string;
-  image: string;
+  // Costas (estampa principal) em cada colorway — mostrada por padrão.
+  back: Record<Colorway, string>;
 }
+
+// Frente (logo pequeno no peito) — igual pra todas as camisetas, só muda a cor.
+// Mostrada no hover/toque.
+export const PRODUCT_FRONT: Record<Colorway, string> = {
+  black: '/images/products/product-front-black.jpg',
+  white: '/images/products/product-front-white.jpg',
+};
 
 export const products: Product[] = [
   {
     name: 'Illegal Racing Club',
-    // Preço comentado — drop em fase de pré-save (sem venda ativa).
-    price: '149,90',
-    meta: { pt: 'Oversized · Cinza', en: 'Oversized · Grey' },
+    meta: { pt: 'Oversized · Numerada', en: 'Oversized · Numbered' },
     serial: '001/100',
-    image: '/images/products/product-illegal-racing-club.png',
+    back: {
+      black: '/images/products/product-illegal-racing-club-back-black.jpg',
+      white: '/images/products/product-illegal-racing-club-back-white.jpg',
+    },
   },
   {
     name: 'Fuck The Eletrics',
-    price: '149,90',
-    meta: { pt: 'Oversized · Preta', en: 'Oversized · Black' },
+    meta: { pt: 'Oversized · Numerada', en: 'Oversized · Numbered' },
     serial: '012/100',
-    image: '/images/products/product-fuck-the-eletrics.png',
+    back: {
+      black: '/images/products/product-fuck-the-eletrics-back-black.jpg',
+      white: '/images/products/product-fuck-the-eletrics-back-white.jpg',
+    },
   },
   {
-    name: 'Barcode · Black',
-    price: '149,90',
-    meta: { pt: 'Oversized · Preta', en: 'Oversized · Black' },
+    name: 'Call to 911',
+    meta: { pt: 'Oversized · Numerada', en: 'Oversized · Numbered' },
     serial: '024/100',
-    image: '/images/products/product-barcode-black.png',
+    back: {
+      black: '/images/products/product-call-to-911-back-black.jpg',
+      white: '/images/products/product-call-to-911-back-white.jpg',
+    },
   },
   {
-    name: 'Barcode · Grey',
-    price: '149,90',
-    meta: { pt: 'Oversized · Cinza', en: 'Oversized · Grey' },
+    name: 'Marea Bomb!',
+    meta: { pt: 'Oversized · Numerada', en: 'Oversized · Numbered' },
     serial: '037/100',
-    image: '/images/products/product-barcode-grey.png',
+    back: {
+      black: '/images/products/product-marea-back-black.jpg',
+      white: '/images/products/product-marea-back-white.jpg',
+    },
+  },
+  {
+    name: 'Uno Goat',
+    meta: { pt: 'Oversized · Numerada', en: 'Oversized · Numbered' },
+    serial: '049/100',
+    back: {
+      black: '/images/products/product-uno-goat-back-black.jpg',
+      white: '/images/products/product-uno-goat-back-white.jpg',
+    },
+  },
+  {
+    name: 'Postinho Crew',
+    meta: { pt: 'Oversized · Numerada', en: 'Oversized · Numbered' },
+    serial: '061/100',
+    back: {
+      black: '/images/products/product-postinho-crew-back-black.jpg',
+      white: '/images/products/product-postinho-crew-back-white.jpg',
+    },
   },
 ];

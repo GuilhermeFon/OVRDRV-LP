@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useSyncExternalStore } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useScroll } from 'framer-motion';
 import type { Translations } from '@/lib/i18n';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -13,9 +13,16 @@ interface HeroProps {
 }
 
 const VIDEO_MP4 = '/videos/hero-garage.mp4';
-const SCROLL_PX_PER_SECOND = 600;
+const HERO_POSTER = '/videos/hero-poster.jpg';
+// Densidade de scroll do scrubbing (px de rolagem por segundo de vídeo).
+// Menor no mobile pra a seção não ficar "presa" por telas demais.
+const SCRUB_PX_PER_SECOND_DESKTOP = 600;
+const SCRUB_PX_PER_SECOND_MOBILE = 300;
 const FALLBACK_DURATION = 12;
 const SEEK_EPSILON = 1 / 30;
+
+const HERO_GRADIENT =
+  'linear-gradient(to top, #000 0%, rgba(0,0,0,0.4) 50%, transparent 100%), radial-gradient(circle at 50% 80%, rgba(153,0,255,0.18), transparent 60%)';
 
 const subscribeNoop = () => () => {};
 const useIsClient = () =>
@@ -36,16 +43,15 @@ type VideoWithRVFC = HTMLVideoElement & {
   cancelVideoFrameCallback?: (handle: number) => void;
 };
 
-export default function Hero({ t }: HeroProps) {
-  const isClient = useIsClient();
-  const isMobile = useIsMobile();
-  const reducedMotion = useReducedMotion();
-  const slowConnection = isClient && detectSlowConnection();
-
-  const isStatic = isClient && (reducedMotion || slowConnection);
-  const isLoop = isClient && isMobile && !reducedMotion && !slowConnection;
-  const isScrub = isClient && !isStatic && !isLoop;
-
+/**
+ * DESKTOP — scroll scrubbing: o scroll controla o tempo do vídeo.
+ * Isolado em componente próprio para o `useScroll` só existir quando o
+ * `wrapperRef` está de fato montado (evita "target ref not hydrated").
+ */
+function HeroScrub({
+  t,
+  pxPerSecond,
+}: HeroProps & { pxPerSecond: number }) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -54,13 +60,10 @@ export default function Hero({ t }: HeroProps) {
     offset: ['start start', 'end end'],
   });
 
-  const mobileVideoY = useTransform(scrollYProgress, [0, 1], ['0%', '-15%']);
-
-  // Wrapper height = duração do vídeo × densidade de pixels + 1 viewport.
-  // O filho `sticky top-0 h-screen` permanece pinado por todo esse intervalo,
-  // então scrollYProgress 0→1 mapeia exatamente o tempo do vídeo.
+  // Altura do wrapper = duração do vídeo × densidade de pixels + 1 viewport.
+  // O filho `sticky top-0 h-screen` fica pinado por todo o intervalo, então
+  // scrollYProgress 0→1 mapeia exatamente o tempo do vídeo.
   useEffect(() => {
-    if (!isScrub) return;
     const wrapper = wrapperRef.current;
     const video = videoRef.current;
     if (!wrapper || !video) return;
@@ -71,7 +74,7 @@ export default function Hero({ t }: HeroProps) {
         video.duration && !Number.isNaN(video.duration)
           ? video.duration
           : FALLBACK_DURATION;
-      wrapper.style.height = `${duration * SCROLL_PX_PER_SECOND + viewport}px`;
+      wrapper.style.height = `${duration * pxPerSecond + viewport}px`;
     };
 
     updateHeight();
@@ -83,14 +86,13 @@ export default function Hero({ t }: HeroProps) {
       video.removeEventListener('loadedmetadata', updateHeight);
       window.removeEventListener('resize', updateHeight);
     };
-  }, [isScrub]);
+  }, [pxPerSecond]);
 
   // Pipeline de seek: cada mudança de scroll dispara `seek`. Se um seek
   // anterior ainda não pintou, enfileira no máximo um follow-up.
   // requestVideoFrameCallback encadeia o próximo só depois da frame anterior
   // ser apresentada — evita seeks cancelados sob scroll rápido.
   useEffect(() => {
-    if (!isScrub) return;
     const video = videoRef.current as VideoWithRVFC | null;
     if (!video) return;
 
@@ -148,9 +150,86 @@ export default function Hero({ t }: HeroProps) {
         video.cancelVideoFrameCallback(rvfcHandle);
       }
     };
-  }, [isScrub, scrollYProgress]);
+  }, [scrollYProgress]);
 
-  if (isStatic) {
+  return (
+    <section
+      ref={wrapperRef}
+      aria-label="OVRDRV — SEM LIMITE, garagem industrial revelando carro tunado"
+      className="relative h-[250vh]"
+    >
+      <div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
+        <video
+          ref={videoRef}
+          src={VIDEO_MP4}
+          poster={HERO_POSTER}
+          className="absolute inset-0 w-full h-full object-cover"
+          muted
+          playsInline
+          preload="auto"
+          aria-hidden="true"
+          disablePictureInPicture
+          disableRemotePlayback
+        />
+
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 z-10 pointer-events-none"
+          style={{ background: HERO_GRADIENT }}
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 z-10 pointer-events-none mix-blend-screen"
+          style={{
+            opacity: 0.08,
+            backgroundImage:
+              'radial-gradient(rgba(255,255,255,0.6) 1px, transparent 1px)',
+            backgroundSize: '3px 3px',
+          }}
+        />
+
+        <HeroContent t={t} />
+        <ScrollIndicator scrollYProgress={scrollYProgress} />
+      </div>
+    </section>
+  );
+}
+
+export default function Hero({ t }: HeroProps) {
+  const isClient = useIsClient();
+  const isMobile = useIsMobile();
+  const reducedMotion = useReducedMotion();
+
+  // Antes da hidratação (SSR/first paint) mostramos só o poster — assim o
+  // celular nunca começa a baixar o vídeo desktop de 32MB. O vídeo certo
+  // (mobile leve ou scrub desktop) só monta depois que sabemos o dispositivo.
+  if (!isClient) {
+    return (
+      <section
+        aria-label="OVRDRV — SEM LIMITE"
+        className="relative h-screen min-h-[560px] w-full overflow-hidden bg-black"
+      >
+        <div
+          aria-hidden="true"
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url('${HERO_POSTER}')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: HERO_GRADIENT }}
+        />
+        <HeroContent t={t} />
+      </section>
+    );
+  }
+
+  // Movimento reduzido ou conexão lenta → hero estático (sem vídeo).
+  if (reducedMotion || detectSlowConnection()) {
     return (
       <section
         aria-label="OVRDRV — SEM LIMITE"
@@ -170,78 +249,21 @@ export default function Hero({ t }: HeroProps) {
         <div
           aria-hidden="true"
           className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              'linear-gradient(to top, #000 0%, rgba(0,0,0,0.4) 50%, transparent 100%), radial-gradient(circle at 50% 80%, rgba(153,0,255,0.18), transparent 60%)',
-          }}
+          style={{ background: HERO_GRADIENT }}
         />
         <HeroContent t={t} />
       </section>
     );
   }
 
+  // Scrubbing no mobile e no desktop — no mobile com densidade menor pra a
+  // seção pinada não se estender por telas demais.
   return (
-    <section
-      ref={wrapperRef}
-      aria-label="OVRDRV — SEM LIMITE, garagem industrial revelando carro tunado"
-      className="relative h-[250vh]"
-    >
-      <div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
-        {isLoop ? (
-          <motion.div
-            style={{ y: mobileVideoY }}
-            className="absolute inset-0 w-full h-[115%]"
-          >
-            <video
-              ref={videoRef}
-              src={VIDEO_MP4}
-              className="w-full h-full object-cover"
-              autoPlay
-              loop
-              muted
-              playsInline
-              preload="auto"
-              aria-hidden="true"
-              disablePictureInPicture
-              disableRemotePlayback
-            />
-          </motion.div>
-        ) : (
-          <video
-            ref={videoRef}
-            src={VIDEO_MP4}
-            className="absolute inset-0 w-full h-full object-cover"
-            muted
-            playsInline
-            preload="auto"
-            aria-hidden="true"
-            disablePictureInPicture
-            disableRemotePlayback
-          />
-        )}
-
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 z-10 pointer-events-none"
-          style={{
-            background:
-              'linear-gradient(to top, #000 0%, rgba(0,0,0,0.4) 50%, transparent 100%), radial-gradient(circle at 50% 80%, rgba(153,0,255,0.18), transparent 60%)',
-          }}
-        />
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 z-10 pointer-events-none mix-blend-screen"
-          style={{
-            opacity: 0.08,
-            backgroundImage:
-              'radial-gradient(rgba(255,255,255,0.6) 1px, transparent 1px)',
-            backgroundSize: '3px 3px',
-          }}
-        />
-
-        <HeroContent t={t} />
-        <ScrollIndicator scrollYProgress={scrollYProgress} />
-      </div>
-    </section>
+    <HeroScrub
+      t={t}
+      pxPerSecond={
+        isMobile ? SCRUB_PX_PER_SECOND_MOBILE : SCRUB_PX_PER_SECOND_DESKTOP
+      }
+    />
   );
 }

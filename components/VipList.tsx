@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import type { Translations } from '@/lib/i18n';
+import { track } from '@/lib/analytics';
 
 interface VipListProps {
   t: Translations;
@@ -85,6 +86,12 @@ export default function VipList({ t }: VipListProps) {
             typeof navigator !== 'undefined' ? navigator.userAgent : '',
           timestamp: new Date().toISOString(),
         }),
+      });
+      // GA4: lead da Lista VIP capturado (com o tamanho escolhido)
+      track('generate_lead', {
+        method: 'vip_list',
+        size,
+        position: Number(position),
       });
       setForm({ nome: '', email: '', whatsapp: '' });
       setSize('');
