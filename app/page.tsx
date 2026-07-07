@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Hero from '@/components/hero/Hero';
 import Manifesto from '@/components/Manifesto';
+import VipList from '@/components/VipList';
 import ProductSection from '@/components/ProductSection';
 import Carousel from '@/components/Carousel';
 import Ticker from '@/components/Ticker';
@@ -97,6 +98,14 @@ export default function Home() {
             </button>
             <button
               type="button"
+              onClick={() => scrollToSection('lista-vip')}
+              className="ovr-navlink cursor-pointer text-[12px] font-semibold tracking-[0.22em] uppercase"
+              style={{ fontFamily: 'var(--font-mono)' }}
+            >
+              {t.nav.listaVip}
+            </button>
+            <button
+              type="button"
               onClick={() => scrollToSection('contact')}
               className="ovr-navlink cursor-pointer text-[12px] font-semibold tracking-[0.22em] uppercase"
               style={{ fontFamily: 'var(--font-mono)' }}
@@ -113,6 +122,7 @@ export default function Home() {
         <Hero t={t} />
         <Ticker variant="invert" />
         <Manifesto t={t} />
+        <VipList t={t} />
         <ProductSection t={t} language={language} />
         <Carousel t={t} />
         <Ticker variant="dark" />
