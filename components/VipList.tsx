@@ -19,6 +19,9 @@ const SHEET_ENDPOINT =
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const SIZES = ['PP', 'P', 'M', 'G', 'GG'] as const;
+type Size = (typeof SIZES)[number];
+
 // Máscara de WhatsApp BR: (11) 99999-9999
 function maskWhatsapp(value: string): string {
   const v = value.replace(/\D/g, '').slice(0, 11);
@@ -33,6 +36,7 @@ type Status = 'idle' | 'sending' | 'success';
 export default function VipList({ t }: VipListProps) {
   const v = t.vipList;
   const [form, setForm] = useState({ nome: '', email: '', whatsapp: '' });
+  const [size, setSize] = useState<Size | ''>('');
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState('');
 
@@ -55,6 +59,7 @@ export default function VipList({ t }: VipListProps) {
     if (nome.length < 2) return setError(v.errors.name);
     if (!EMAIL_RE.test(email)) return setError(v.errors.email);
     if (waDigits.length < 10) return setError(v.errors.whatsapp);
+    if (!size) return setError(v.errors.size);
 
     if (!SHEET_ENDPOINT || SHEET_ENDPOINT.includes('COLE_AQUI')) {
       return setError(v.errors.notConfigured);
@@ -74,6 +79,7 @@ export default function VipList({ t }: VipListProps) {
           email,
           whatsapp,
           whatsapp_digits: waDigits,
+          tamanho: size,
           origem: 'landing-ovrdrv',
           user_agent:
             typeof navigator !== 'undefined' ? navigator.userAgent : '',
@@ -81,6 +87,7 @@ export default function VipList({ t }: VipListProps) {
         }),
       });
       setForm({ nome: '', email: '', whatsapp: '' });
+      setSize('');
       setStatus('success');
     } catch (err) {
       console.error(err);
@@ -299,6 +306,43 @@ export default function VipList({ t }: VipListProps) {
                     </div>
                   );
                 })}
+
+                {/* Seletor de tamanho — radios estilizados no padrão OVRDRV */}
+                <fieldset className="m-0 mt-1 p-0 border-0">
+                  <legend
+                    className="mb-2 p-0 text-[10px] font-bold tracking-[0.22em] uppercase text-[var(--ovr-fg-mute)]"
+                    style={{ fontFamily: 'var(--font-mono)' }}
+                  >
+                    {v.sizeLabel}
+                  </legend>
+                  <div className="grid grid-cols-5 gap-2">
+                    {SIZES.map((sz) => {
+                      const selected = size === sz;
+                      return (
+                        <label key={sz} className="cursor-pointer">
+                          <input
+                            type="radio"
+                            name="tamanho"
+                            value={sz}
+                            checked={selected}
+                            onChange={() => setSize(sz)}
+                            className="sr-only peer"
+                          />
+                          <span
+                            className={`flex items-center justify-center py-3 text-[13px] font-bold tracking-[0.08em] uppercase border transition-all duration-200 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[var(--ovr-purple-400)] ${
+                              selected
+                                ? 'border-[var(--ovr-purple-500)] bg-[var(--ovr-purple-500)] text-white shadow-[var(--glow-purple-sm)]'
+                                : 'border-[var(--ovr-line)] bg-[var(--ovr-bg-soft)] text-[var(--ovr-fg-mute)] hover:border-[var(--ovr-line-strong)] hover:text-white'
+                            }`}
+                            style={{ fontFamily: 'var(--font-mono)' }}
+                          >
+                            {sz}
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </fieldset>
 
                 <motion.button
                   type="submit"

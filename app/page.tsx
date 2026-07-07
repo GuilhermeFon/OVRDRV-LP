@@ -7,7 +7,7 @@ import Hero from '@/components/hero/Hero';
 import Manifesto from '@/components/Manifesto';
 import VipList from '@/components/VipList';
 import ProductSection from '@/components/ProductSection';
-import Carousel from '@/components/Carousel';
+// import Carousel from '@/components/Carousel'; // Lifestyle comentado por enquanto
 import Ticker from '@/components/Ticker';
 import Footer from '@/components/Footer';
 import LanguageToggle from '@/components/LanguageToggle';
@@ -88,6 +88,7 @@ export default function Home() {
             >
               {t.nav.produtos}
             </button>
+            {/* Lookbook comentado — seção Lifestyle desativada por enquanto
             <button
               type="button"
               onClick={() => scrollToSection('lookbook')}
@@ -96,6 +97,7 @@ export default function Home() {
             >
               {t.nav.lookbook}
             </button>
+            */}
             <button
               type="button"
               onClick={() => scrollToSection('lista-vip')}
@@ -122,9 +124,11 @@ export default function Home() {
         <Hero t={t} />
         <Ticker variant="invert" />
         <Manifesto t={t} />
-        <VipList t={t} />
         <ProductSection t={t} language={language} />
+        <VipList t={t} />
+        {/* Lifestyle (Carousel) comentado por enquanto
         <Carousel t={t} />
+        */}
         <Ticker variant="dark" />
         <Footer t={t} />
       </main>

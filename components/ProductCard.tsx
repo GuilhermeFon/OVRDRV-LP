@@ -16,7 +16,7 @@ interface ProductCardProps {
 
 export default function ProductCard({
   name,
-  price,
+  // price, // comentado — drop em pré-save, valores ocultos por enquanto
   meta,
   serial,
   image,
@@ -25,8 +25,11 @@ export default function ProductCard({
 }: ProductCardProps) {
   const [hover, setHover] = useState(false);
 
-  const handlePurchase = () => {
-    window.open('https://checkout.cartpanda.com/example-product', '_blank');
+  // Drop em pré-save: em vez de abrir checkout, leva o usuário ao formulário
+  // da Lista VIP pra reservar a vaga. Quando as vendas abrirem, trocar de volta
+  // pra abertura do checkout.
+  const handlePreSave = () => {
+    document.getElementById('lista-vip')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -100,6 +103,7 @@ export default function ProductCard({
         >
           {name}
         </h3>
+        {/* Preço comentado — drop em fase de pré-save (sem venda ativa).
         <div
           className="text-2xl font-bold tracking-[-0.02em] text-white"
           style={{ fontFamily: 'var(--font-display)' }}
@@ -109,11 +113,18 @@ export default function ProductCard({
           </span>
           {price}
         </div>
+        */}
+        <span
+          className="text-[11px] font-semibold tracking-[0.28em] uppercase text-[var(--ovr-purple-300)] ovr-glow-purple"
+          style={{ fontFamily: 'var(--font-mono)' }}
+        >
+          EM BREVE
+        </span>
       </div>
 
       <motion.button
         type="button"
-        onClick={handlePurchase}
+        onClick={handlePreSave}
         whileTap={{ scale: 0.97 }}
         className="w-full cursor-pointer py-3.5 text-[12px] font-bold tracking-[0.28em] uppercase flex items-center justify-center gap-2 transition-all duration-200"
         style={{

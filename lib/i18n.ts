@@ -36,7 +36,7 @@ export const translations = {
     products: {
       eyebrow: 'COLEÇÃO EXCLUSIVA',
       title: 'DROP 01',
-      button: 'COMPRAR',
+      button: 'PRÉ-SALVAR',
     },
     vipList: {
       eyebrow: '— LISTA VIP · DROP 01 —',
@@ -57,6 +57,7 @@ export const translations = {
         email: 'voce@dominio.com',
         whatsapp: '(11) 99999-9999',
       },
+      sizeLabel: 'Tamanho',
       submit: 'SALVE SUA VAGA',
       sending: 'ENVIANDO…',
       fine: 'Ao enviar você concorda em receber comunicações da OVRDRV. Seus dados ficam com a gente — só a gente.',
@@ -64,6 +65,7 @@ export const translations = {
         name: 'Informe seu nome completo.',
         email: 'E-mail inválido.',
         whatsapp: 'WhatsApp inválido — informe DDD + número.',
+        size: 'Selecione um tamanho.',
         generic: 'Deu ruim no envio. Tenta de novo.',
         notConfigured: 'Formulário ainda não configurado.',
       },
@@ -133,7 +135,7 @@ export const translations = {
     products: {
       eyebrow: 'EXCLUSIVE COLLECTION',
       title: 'DROP 01',
-      button: 'BUY',
+      button: 'PRE-SAVE',
     },
     vipList: {
       eyebrow: '— VIP LIST · DROP 01 —',
@@ -154,6 +156,7 @@ export const translations = {
         email: 'you@domain.com',
         whatsapp: '(11) 99999-9999',
       },
+      sizeLabel: 'Size',
       submit: 'SAVE YOUR SPOT',
       sending: 'SENDING…',
       fine: 'By submitting you agree to receive communications from OVRDRV. Your data stays with us — only us.',
@@ -161,6 +164,7 @@ export const translations = {
         name: 'Enter your full name.',
         email: 'Invalid e-mail.',
         whatsapp: 'Invalid WhatsApp — include area code + number.',
+        size: 'Select a size.',
         generic: 'Something went wrong. Try again.',
         notConfigured: 'Form not configured yet.',
       },
@@ -209,30 +213,31 @@ export interface Product {
 export const products: Product[] = [
   {
     name: 'Illegal Racing Club',
+    // Preço comentado — drop em fase de pré-save (sem venda ativa).
     price: '149,90',
-    meta: { pt: 'Oversized · Black', en: 'Oversized · Black' },
+    meta: { pt: 'Oversized · Cinza', en: 'Oversized · Grey' },
     serial: '001/100',
-    image: '/images/products/banner-1.png',
+    image: '/images/products/product-illegal-racing-club.png',
   },
   {
-    name: 'Call to 911',
+    name: 'Fuck The Eletrics',
     price: '149,90',
-    meta: { pt: 'Oversized · Natural', en: 'Oversized · Natural' },
+    meta: { pt: 'Oversized · Preta', en: 'Oversized · Black' },
     serial: '012/100',
-    image: '/images/products/banner-2.png',
+    image: '/images/products/product-fuck-the-eletrics.png',
   },
   {
-    name: 'Marea Bomb!',
+    name: 'Barcode · Black',
     price: '149,90',
-    meta: { pt: 'Oversized · Black', en: 'Oversized · Black' },
+    meta: { pt: 'Oversized · Preta', en: 'Oversized · Black' },
     serial: '024/100',
-    image: '/images/products/banner-3.png',
+    image: '/images/products/product-barcode-black.png',
   },
   {
-    name: 'Uno Coat',
+    name: 'Barcode · Grey',
     price: '149,90',
-    meta: { pt: 'Oversized · Natural', en: 'Oversized · Natural' },
+    meta: { pt: 'Oversized · Cinza', en: 'Oversized · Grey' },
     serial: '037/100',
-    image: '/images/products/banner-4.png',
+    image: '/images/products/product-barcode-grey.png',
   },
 ];
