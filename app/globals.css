@@ -112,6 +112,25 @@
     background: var(--ovr-bg);
     color: var(--ovr-fg);
     font-family: var(--font-body);
+    /* Firefox — não permite 1px exato; "thin" é o mais fino disponível */
+    scrollbar-width: thin;
+    scrollbar-color: var(--ovr-purple-500) transparent;
+  }
+
+  /* WebKit/Chromium — scrollbar roxa de 1px */
+  ::-webkit-scrollbar {
+    width: 1px;
+    height: 1px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--ovr-purple-500);
+    box-shadow: var(--glow-purple-sm);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--ovr-purple-400);
   }
   body {
     background: var(--ovr-bg);
