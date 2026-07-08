@@ -114,7 +114,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
         />
       </head>
-      <body>
+      {/* suppressHydrationWarning: extensões de navegador (ex: ColorZilla injeta
+          cz-shortcut-listen) alteram o <body> antes da hidratação — isso evita
+          o falso alerta de mismatch, sem afetar o resto da árvore. */}
+      <body suppressHydrationWarning>
         {children}
         <Analytics />
       </body>

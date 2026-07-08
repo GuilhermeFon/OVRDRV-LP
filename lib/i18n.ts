@@ -15,6 +15,7 @@ export const translations = {
       cta: 'Explorar Coleção',
       ignite: 'ignite ?',
       scroll: 'SCROLL',
+      loading: 'CARREGANDO EXPERIÊNCIA',
     },
     manifesto: {
       eyebrow: '— MANIFESTO —',
@@ -116,6 +117,7 @@ export const translations = {
       cta: 'Explore Collection',
       ignite: 'ignite ?',
       scroll: 'SCROLL',
+      loading: 'LOADING EXPERIENCE',
     },
     manifesto: {
       eyebrow: '— MANIFESTO —',
