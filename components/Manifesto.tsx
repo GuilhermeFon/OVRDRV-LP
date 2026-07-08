@@ -10,6 +10,49 @@ interface ManifestoProps {
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
+interface MosaicTileProps {
+  src: string;
+  alt: string;
+  className?: string;
+  tag?: string;
+}
+
+// Tile do mosaico (estilo grid do GTA) — hover com zoom + borda roxa.
+function MosaicTile({ src, alt, className = '', tag }: MosaicTileProps) {
+  return (
+    <div
+      className={`group relative overflow-hidden bg-[var(--ovr-bg-soft)] ${className}`}
+    >
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes="(max-width: 1024px) 50vw, 25vw"
+        className="object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'linear-gradient(to top, rgba(0,0,0,0.45), transparent 60%)',
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 pointer-events-none border border-transparent transition-colors duration-300 group-hover:border-[var(--ovr-purple-500)]"
+      />
+      {tag && (
+        <span
+          className="absolute top-2.5 left-2.5 text-[9px] font-bold tracking-[0.22em] uppercase text-white bg-[var(--ovr-purple-500)] px-1.5 py-[3px]"
+          style={{ fontFamily: 'var(--font-mono)' }}
+        >
+          {tag}
+        </span>
+      )}
+    </div>
+  );
+}
+
 export default function Manifesto({ t }: ManifestoProps) {
   const handleCtaClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -48,72 +91,44 @@ export default function Manifesto({ t }: ManifestoProps) {
       />
 
       <div className="relative max-w-[1280px] mx-auto grid gap-10 lg:gap-16 items-center grid-cols-1 lg:grid-cols-[1.05fr_1fr]">
-        <motion.figure
+        {/* Mosaico de imagens conceito (estilo grid do GTA) */}
+        <motion.div
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.8, ease: EASE }}
-          className="relative aspect-[4/5] bg-[var(--ovr-bg-soft)] overflow-hidden m-0"
+          className="grid grid-cols-2 grid-rows-4 gap-2 h-[clamp(480px,62vw,640px)] m-0"
         >
-          <Image
-            src="/images/products/banner-1.png"
-            alt="OVRDRV — Drop 01 · Illegal Racing Club mockup"
-            fill
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            className="object-cover"
-            style={{ filter: 'saturate(1.05) contrast(1.1)' }}
+          <MosaicTile
+            src="/images/grid/model.jpg"
+            alt="OVRDRV — Illegal Racing Club · lookbook"
+            className="row-span-2"
+            tag="IRC"
           />
-
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background:
-                'linear-gradient(to top, rgba(0,0,0,0.78), transparent 55%)',
-            }}
+          <MosaicTile
+            src="/images/grid/banner-1.jpg"
+            alt="OVRDRV — Drop 01 · Illegal Racing Club"
+            tag="DROP 01"
           />
-
-          <span
-            className="absolute top-5 left-5 text-[10px] font-bold tracking-[0.22em] uppercase text-white bg-[var(--ovr-purple-500)] px-2.5 py-1"
-            style={{ fontFamily: 'var(--font-mono)' }}
-          >
-            DROP #001
-          </span>
-
-          <span
-            className="absolute top-5 right-5 text-[10px] font-bold tracking-[0.15em] text-white px-1.5 py-[3px] backdrop-blur-sm"
-            style={{
-              fontFamily: 'var(--font-mono)',
-              border: '1px solid rgba(255,255,255,0.45)',
-              background: 'rgba(0,0,0,0.4)',
-            }}
-          >
-            001/100
-          </span>
-
-          <div
-            aria-hidden="true"
-            className="absolute pointer-events-none"
-            style={{ inset: 12, border: '2px solid rgba(255,255,255,0.18)' }}
+          <MosaicTile
+            src="/images/grid/post-2.jpg"
+            alt="OVRDRV — conceito de marca"
+            tag="OVRDRV"
           />
-
-          <figcaption className="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4">
-            <div>
-              <div
-                className="text-[10px] font-semibold tracking-[0.3em] uppercase text-white/70"
-                style={{ fontFamily: 'var(--font-mono)' }}
-              >
-                {t.manifesto.mockupLabel}
-              </div>
-              <div
-                className="text-sm md:text-base font-semibold uppercase text-white tracking-[0.04em] mt-1"
-                style={{ fontFamily: 'var(--font-heading)' }}
-              >
-                {t.manifesto.mockupCaption}
-              </div>
-            </div>
-          </figcaption>
-        </motion.figure>
+          <MosaicTile
+            src="/images/grid/banner-2.jpg"
+            alt="OVRDRV — Best car & wear"
+            className="col-span-2"
+          />
+          <MosaicTile
+            src="/images/grid/post-1.jpg"
+            alt="OVRDRV — coming soon"
+          />
+          <MosaicTile
+            src="/images/grid/post-3.jpg"
+            alt="OVRDRV — conceito de marca"
+          />
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, x: 30 }}
