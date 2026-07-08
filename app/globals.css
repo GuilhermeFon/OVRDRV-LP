@@ -117,21 +117,6 @@
     scrollbar-color: var(--ovr-purple-500) transparent;
   }
 
-  /* WebKit/Chromium — scrollbar roxa de 1px */
-  ::-webkit-scrollbar {
-    width: 1px;
-    height: 1px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: var(--ovr-purple-500);
-    box-shadow: var(--glow-purple-sm);
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--ovr-purple-400);
-  }
   body {
     background: var(--ovr-bg);
     color: var(--ovr-fg);
@@ -149,6 +134,39 @@
     outline: 2px solid var(--ovr-purple-400);
     outline-offset: 2px;
   }
+}
+
+/* =========================================================================
+   Scrollbar — WebKit/Chromium. FORA de @layer de propósito: regras sem layer
+   ganham das com layer no cascade, garantindo que os botões ▲▼ das pontas
+   sumam mesmo. Roxa, 1px, sem setas.
+   ========================================================================= */
+::-webkit-scrollbar {
+  width: 1px;
+  height: 1px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--ovr-purple-500);
+  box-shadow: var(--glow-purple-sm);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ovr-purple-400);
+}
+/* Some com os botões de seta (increment/decrement) em todas as posições */
+::-webkit-scrollbar-button,
+::-webkit-scrollbar-button:vertical:start,
+::-webkit-scrollbar-button:vertical:end,
+::-webkit-scrollbar-button:horizontal:start,
+::-webkit-scrollbar-button:horizontal:end,
+::-webkit-scrollbar-button:single-button,
+::-webkit-scrollbar-button:double-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
 }
 
 @layer utilities {
