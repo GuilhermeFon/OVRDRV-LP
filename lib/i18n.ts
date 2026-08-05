@@ -8,12 +8,11 @@ export const translations = {
       contato: 'CONTATO',
     },
     hero: {
-      eyebrow: '— DROP #001 — ILLEGAL RACING CLUB —',
+      eyebrow: 'Illegal Racing Club',
       slogan: 'SEM LIMITE',
       subtitle:
         'Streetwear inspirado na cultura automotiva real. Cada peça numerada, edição limitada.',
-      cta: 'Explorar Coleção',
-      ignite: 'ignite ?',
+      cta: 'Ver camisetas',
       scroll: 'SCROLL',
       loading: 'CARREGANDO EXPERIÊNCIA',
     },
@@ -110,7 +109,7 @@ export const translations = {
       contato: 'CONTACT',
     },
     hero: {
-      eyebrow: '— DROP #001 — ILLEGAL RACING CLUB —',
+      eyebrow: 'Drop #001 - Illegal Racing Club',
       slogan: 'SEM LIMITE',
       subtitle:
         'Streetwear inspired by real street-car culture. Numbered pieces, limited edition.',

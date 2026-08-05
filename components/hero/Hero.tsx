@@ -14,6 +14,10 @@ import { useIsMobile } from '@/hooks/useIsMobile';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import HeroContent from './HeroContent';
 import HeroLoader from './HeroLoader';
+import HeroVideo from './HeroVideo';
+
+// TESTE: true = vídeo do YouTube no hero. false = volta pro scrub de frames.
+const USE_VIDEO: boolean = true;
 
 interface HeroProps {
   t: Translations;
@@ -299,6 +303,8 @@ export default function Hero({ t }: HeroProps) {
         <HeroContent t={t} />
       </section>
     );
+  } else if (USE_VIDEO) {
+    hero = <HeroVideo t={t} onReady={handleReady} />;
   } else {
     hero = (
       <HeroScrub

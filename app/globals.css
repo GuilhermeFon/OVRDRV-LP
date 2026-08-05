@@ -172,17 +172,17 @@
 @layer utilities {
   .ovr-eyebrow {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 1rem;
     font-weight: 600;
     letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: var(--ovr-fg-mute);
+    color: #fff;
   }
   .ovr-script {
     font-family: var(--font-script);
     font-style: italic;
-    color: var(--ovr-purple-300);
-    text-shadow: var(--glow-purple-sm);
+    /* color: var(--ovr-purple-300); */
+    /* text-shadow: var(--glow-purple-sm); */
   }
   .ovr-glow-purple {
     text-shadow: var(--glow-purple);

@@ -1,7 +1,34 @@
 import './globals.css';
 import type { Metadata, Viewport } from 'next';
+import {
+  Rubik_Glitch,
+  Rubik_Spray_Paint,
+  Rubik_Wet_Paint,
+} from 'next/font/google';
 import Analytics from '@/components/Analytics';
 import { SITE_URL } from '@/lib/site';
+
+// TESTE: fontes candidatas para o h1 do hero — trocar a var usada em HeroContent
+const rubikGlitch = Rubik_Glitch({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-glitch',
+  display: 'swap',
+});
+
+const rubikSprayPaint = Rubik_Spray_Paint({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-spray',
+  display: 'swap',
+});
+
+const rubikWetPaint = Rubik_Wet_Paint({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-wet',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -98,7 +125,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR">
+    <html
+      lang="pt-BR"
+      className={`${rubikGlitch.variable} ${rubikSprayPaint.variable} ${rubikWetPaint.variable}`}
+    >
       <head>
         {/* Poster do hero — melhora o LCP (aparece antes do vídeo carregar) */}
         <link rel="preload" as="image" href="/videos/hero-poster.jpg" />
