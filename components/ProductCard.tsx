@@ -1,15 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { PRODUCT_FRONT, type Colorway } from '@/lib/i18n';
+import { useCanHover } from '@/hooks/useCanHover';
 import { track } from '@/lib/analytics';
 
 interface ProductCardProps {
   name: string;
   meta: string;
-  serial: string;
   back: Record<Colorway, string>;
   buttonText: string;
   colorLabels: Record<Colorway, string>;
@@ -18,30 +18,59 @@ interface ProductCardProps {
 }
 
 const COLORWAYS: Colorway[] = ['black', 'white'];
+const SWIPE_THRESHOLD = 40;
 
 export default function ProductCard({
   name,
   meta,
-  serial,
   back,
   buttonText,
   colorLabels,
   viewLabels,
   index,
 }: ProductCardProps) {
+  const canHover = useCanHover();
   const [hover, setHover] = useState(false);
-  const [flipped, setFlipped] = useState(false); // toque (mobile) alterna vista
+  const [flipped, setFlipped] = useState(false);
   const [color, setColor] = useState<Colorway>('black');
 
-  const showFront = hover || flipped;
+  // Em touch o hover é emulado e trava; lá a vista é 100% controlada por toque.
+  const showFront = canHover ? hover || flipped : flipped;
   const backSrc = back[color];
   const frontSrc = PRODUCT_FRONT[color];
+
+  // Swipe horizontal alterna a vista no mobile. O clique é suprimido quando o
+  // gesto virou swipe, senão o toque contaria duas vezes.
+  const touchStartX = useRef<number | null>(null);
+  const swiped = useRef(false);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    swiped.current = false;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(dx) < SWIPE_THRESHOLD) return;
+    swiped.current = true;
+    setFlipped(dx < 0);
+  };
+
+  const handleViewToggle = () => {
+    if (swiped.current) {
+      swiped.current = false;
+      return;
+    }
+    setFlipped((f) => !f);
+  };
 
   // Drop em pré-save: em vez de checkout, leva ao formulário da Lista VIP.
   const handlePreSave = () => {
     track('select_item', {
       item_name: name,
-      item_id: serial,
+      item_id: name,
       item_category: 'Drop 01',
       item_variant: color,
       source: 'product_card',
@@ -55,15 +84,17 @@ export default function ProductCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-100px' }}
       transition={{ duration: 0.6, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
+      onMouseEnter={() => canHover && setHover(true)}
+      onMouseLeave={() => canHover && setHover(false)}
       className="flex flex-col gap-3.5 group"
     >
       <button
         type="button"
-        onClick={() => setFlipped((f) => !f)}
+        onClick={handleViewToggle}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
         aria-label={`${name} — ${showFront ? viewLabels.front : viewLabels.back}`}
-        className="relative aspect-square bg-[var(--ovr-bg-soft)] overflow-hidden cursor-pointer block w-full"
+        className="relative aspect-square bg-[var(--ovr-bg-soft)] overflow-hidden cursor-pointer block w-full touch-pan-y select-none"
       >
         {/* Costas (padrão) */}
         <Image
@@ -77,7 +108,7 @@ export default function ProductCard({
             transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)',
           }}
         />
-        {/* Frente (hover / toque) — crossfade por cima */}
+        {/* Frente (hover no desktop / toque no mobile) — crossfade por cima */}
         <Image
           src={frontSrc}
           alt={`${name} — ${viewLabels.front} (${colorLabels[color]})`}
@@ -90,36 +121,20 @@ export default function ProductCard({
           }}
         />
 
-        <span
-          className="absolute top-3 left-3 z-10 text-[10px] font-bold tracking-[0.22em] uppercase text-white bg-[var(--ovr-purple-500)] px-2 py-[3px]"
-          style={{ fontFamily: 'var(--font-mono)' }}
-        >
-          DROP #001
-        </span>
-
-        <span
-          className="absolute top-3 right-3 z-10 text-[10px] font-bold tracking-[0.15em] text-white px-1.5 py-[3px] backdrop-blur-sm"
-          style={{
-            fontFamily: 'var(--font-mono)',
-            border: '1px solid rgba(255,255,255,0.45)',
-            background: 'rgba(0,0,0,0.4)',
-          }}
-        >
-          {serial}
-        </span>
-
-        {/* Indicador de vista (Costas / Frente) */}
-        <span
-          className="absolute bottom-3 left-3 z-10 text-[9px] font-bold tracking-[0.24em] uppercase text-white/90 px-2 py-[3px] backdrop-blur-sm transition-colors duration-300"
-          style={{
-            fontFamily: 'var(--font-mono)',
-            background: showFront
-              ? 'rgba(153,0,255,0.55)'
-              : 'rgba(0,0,0,0.45)',
-          }}
-        >
-          {showFront ? viewLabels.front : viewLabels.back}
-        </span>
+        {/* Indicador de vista — no touch quem mostra o estado é o seletor */}
+        {canHover && (
+          <span
+            className="absolute bottom-3 left-3 z-10 text-[9px] font-bold tracking-[0.24em] uppercase text-white/90 px-2 py-[3px] backdrop-blur-sm transition-colors duration-300"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              background: showFront
+                ? 'rgba(153,0,255,0.55)'
+                : 'rgba(0,0,0,0.45)',
+            }}
+          >
+            {showFront ? viewLabels.front : viewLabels.back}
+          </span>
+        )}
 
         <div
           aria-hidden="true"
@@ -127,6 +142,37 @@ export default function ProductCard({
           style={{ opacity: hover ? 0.25 : 0 }}
         />
       </button>
+
+      {/* Seletor de vista — só em touch, onde hover não existe */}
+      {!canHover && (
+        <div
+          className="grid grid-cols-2 border border-[var(--ovr-line)]"
+          role="tablist"
+          aria-label={name}
+        >
+          {([false, true] as const).map((front) => {
+            const selected = showFront === front;
+            const label = front ? viewLabels.front : viewLabels.back;
+            return (
+              <button
+                key={label}
+                type="button"
+                role="tab"
+                aria-selected={selected}
+                onClick={() => setFlipped(front)}
+                className="py-2.5 text-[10px] font-bold tracking-[0.24em] uppercase transition-colors duration-300"
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  background: selected ? 'var(--ovr-purple-500)' : 'transparent',
+                  color: selected ? '#fff' : 'var(--ovr-fg-dim)',
+                }}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       <div className="flex flex-col gap-2.5">
         <span

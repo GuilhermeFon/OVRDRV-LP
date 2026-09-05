@@ -63,13 +63,16 @@ export default function Home() {
             className="flex items-center cursor-pointer"
           >
 
+            {/* Asset recortado (o PNG original é quadrado com margem
+                transparente, o que encolhia a marca pra ~14px de altura útil).
+                No mobile a logo é maior; no desktop o header mantém 26px. */}
             <Image
-              src="/logo/ovrdrv-barcode-white.png"
+              src="/logo/ovrdrv-barcode-white-trim.png"
               alt="OVRDRV"
-              width={140}
-              height={26}
+              width={844}
+              height={518}
               priority
-              className="h-[26px] w-auto"
+              className="h-[34px] md:h-[26px] w-auto"
             />
           </button>
 

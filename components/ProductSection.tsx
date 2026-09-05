@@ -50,7 +50,6 @@ export default function ProductSection({ t, language }: ProductSectionProps) {
               key={product.name}
               name={product.name}
               meta={product.meta[language]}
-              serial={product.serial}
               back={product.back}
               buttonText={t.products.button}
               colorLabels={t.products.colors}

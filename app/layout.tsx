@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: 'OVRDRV — SEM LIMITE | Streetwear Automotivo',
   description:
-    'Streetwear de luxo inspirado na cultura automotiva real. DROP 01 — Illegal Racing Club. Edição numerada, peças limitadas.',
+    'Streetwear de luxo inspirado na cultura automotiva real. DROP 01 — Illegal Racing Club. Peças limitadas, sem reposição.',
   applicationName: 'OVRDRV',
   keywords: [
     'streetwear',
@@ -109,7 +109,7 @@ const orgJsonLd = {
   url: SITE_URL,
   logo: `${SITE_URL}/logo/ovrdrv-logo-white.png`,
   description:
-    'Streetwear de luxo inspirado na cultura automotiva real. Edição numerada, peças limitadas.',
+    'Streetwear de luxo inspirado na cultura automotiva real. Peças limitadas, sem reposição.',
   email: 'contato@ovrdrv.com',
   sameAs: ['https://instagram.com/ovrdrv'],
   address: {

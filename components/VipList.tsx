@@ -41,13 +41,6 @@ export default function VipList({ t }: VipListProps) {
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState('');
 
-  // Posição / contador visual (só efeito — número real vem do servidor).
-  // Sorteado uma vez; os nós que o exibem usam suppressHydrationWarning
-  // porque o valor difere entre server e client de propósito.
-  const [position] = useState(() =>
-    String(Math.floor(37 + Math.random() * 40)).padStart(3, '0'),
-  );
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -91,7 +84,6 @@ export default function VipList({ t }: VipListProps) {
       track('generate_lead', {
         method: 'vip_list',
         size,
-        position: Number(position),
       });
       setForm({ nome: '', email: '', whatsapp: '' });
       setSize('');
@@ -203,24 +195,6 @@ export default function VipList({ t }: VipListProps) {
             style={{ inset: 10, border: '1px solid rgba(255,255,255,0.06)' }}
           />
 
-          {/* tags do topo do card */}
-          <span
-            className="absolute top-0 left-6 -translate-y-1/2 bg-[var(--ovr-purple-500)] text-white text-[10px] font-bold tracking-[0.22em] uppercase px-2.5 py-1.5"
-            style={{ fontFamily: 'var(--font-mono)' }}
-          >
-            {v.cardTag}
-          </span>
-          <span
-            className="absolute top-0 right-6 -translate-y-1/2 bg-black text-white text-[10px] font-bold tracking-[0.15em] px-2.5 py-1.5"
-            style={{
-              fontFamily: 'var(--font-mono)',
-              border: '1px solid rgba(255,255,255,0.45)',
-            }}
-            suppressHydrationWarning
-          >
-            {position}/100
-          </span>
-
           {status === 'success' ? (
             <motion.div
               initial={{ opacity: 0, scale: 0.96 }}
@@ -228,13 +202,6 @@ export default function VipList({ t }: VipListProps) {
               transition={{ duration: 0.5, ease: EASE }}
               className="relative flex flex-col items-center text-center py-5 px-2"
             >
-              <div
-                className="text-[11px] font-bold tracking-[0.28em] uppercase text-[var(--ovr-purple-300)] mb-3.5 ovr-glow-purple"
-                style={{ fontFamily: 'var(--font-mono)' }}
-                suppressHydrationWarning
-              >
-                — {v.success.position} {position}/100 —
-              </div>
               <h3
                 className="text-[clamp(2rem,4vw,2.8rem)] font-extrabold tracking-[-0.03em] leading-[0.95] uppercase text-white mb-2.5 whitespace-pre-line"
                 style={{ fontFamily: 'var(--font-display)' }}
