@@ -170,7 +170,7 @@ export default function Footer({ t }: FooterProps) {
             </motion.a>
 
             <motion.a
-              href="https://instagram.com/ovrdrv"
+              href="https://instagram.com/overdrivewear/"
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ x: 8 }}
@@ -185,7 +185,9 @@ export default function Footer({ t }: FooterProps) {
                 >
                   {t.footer.instagramLabel}
                 </div>
-                <div className="text-[17px]">@ovrdrv</div>
+                <div className="text-[17px]">
+                    @ovrdrv
+                </div>
               </div>
             </motion.a>
 
@@ -212,7 +214,7 @@ export default function Footer({ t }: FooterProps) {
         style={{ fontFamily: 'var(--font-mono)' }}
       >
         <span>{t.footer.rights}</span>
-        <span>{t.footer.cnpj}</span>
+        {/* <span>{t.footer.cnpj}</span> */}
         <span>{t.footer.location}</span>
       </motion.div>
     </footer>

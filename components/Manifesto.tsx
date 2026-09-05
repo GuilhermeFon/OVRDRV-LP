@@ -10,45 +10,78 @@ interface ManifestoProps {
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-interface MosaicTileProps {
-  src: string;
-  alt: string;
-  className?: string;
-  tag?: string;
+const MONO = { fontFamily: 'var(--font-mono)' } as const;
+
+/* Frames técnicos nos cantos (HUD de painel) — acendem no hover do card. */
+function CornerBrackets() {
+  const base =
+    'absolute w-4 h-4 border-[var(--ovr-purple-500)] opacity-40 transition-opacity duration-500 group-hover:opacity-100';
+  return (
+    <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
+      <span className={`${base} top-2 left-2 border-t border-l`} />
+      <span className={`${base} top-2 right-2 border-t border-r`} />
+      <span className={`${base} bottom-2 left-2 border-b border-l`} />
+      <span className={`${base} bottom-2 right-2 border-b border-r`} />
+    </div>
+  );
 }
 
-// Tile do mosaico (estilo grid do GTA) — hover com zoom + borda roxa.
-function MosaicTile({ src, alt, className = '', tag }: MosaicTileProps) {
+const RAIL_SHOTS = [
+  {
+    src: '/images/products/product-illegal-racing-club-back-black.jpg',
+    alt: 'OVRDRV — camiseta Illegal Racing Club preta · Drop 01',
+    index: '02',
+    /* O mockup tem muita margem preta: aproxima pra estampa preencher o tile. */
+    zoom: 'scale-[1.55] group-hover:scale-[1.64]',
+  },
+  {
+    src: '/images/grid/post-2.jpg',
+    alt: 'OVRDRV — pôster da marca',
+    index: '03',
+  },
+  {
+    src: '/images/grid/post-3.jpg',
+    alt: 'OVRDRV — marcas de pneu · Illegal Racing Club',
+    index: '04',
+  },
+] as const;
+
+/* Miniatura do rail lateral — funciona como contact sheet ao lado da foto. */
+function RailShot({
+  src,
+  alt,
+  index,
+  zoom = '',
+}: {
+  src: string;
+  alt: string;
+  index: string;
+  zoom?: string;
+}) {
   return (
-    <div
-      className={`group relative overflow-hidden bg-[var(--ovr-bg-soft)] ${className}`}
-    >
+    <div className="group relative overflow-hidden bg-[var(--ovr-bg-soft)] border border-[var(--ovr-line)] transition-colors duration-300 hover:border-[var(--ovr-purple-500)] aspect-square lg:aspect-auto lg:h-full">
       <Image
         src={src}
         alt={alt}
         fill
-        sizes="(max-width: 1024px) 50vw, 25vw"
-        className="object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+        sizes="(max-width: 1024px) 33vw, 190px"
+        className={`object-cover opacity-75 saturate-[0.85] transition-all duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-100 group-hover:saturate-100 ${zoom || 'group-hover:scale-[1.06]'}`}
       />
       <div
         aria-hidden="true"
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'linear-gradient(to top, rgba(0,0,0,0.45), transparent 60%)',
+          background:
+            'linear-gradient(to top, rgba(0,0,0,0.7), transparent 55%)',
         }}
       />
-      <div
+      <span
         aria-hidden="true"
-        className="absolute inset-0 pointer-events-none border border-transparent transition-colors duration-300 group-hover:border-[var(--ovr-purple-500)]"
-      />
-      {tag && (
-        <span
-          className="absolute top-2.5 left-2.5 text-[9px] font-bold tracking-[0.22em] uppercase text-white bg-[var(--ovr-purple-500)] px-1.5 py-[3px]"
-          style={{ fontFamily: 'var(--font-mono)' }}
-        >
-          {tag}
-        </span>
-      )}
+        className="absolute bottom-1.5 right-2 text-[9px] font-bold tracking-[0.18em] text-white/55 transition-colors duration-300 group-hover:text-[var(--ovr-purple-300)]"
+        style={MONO}
+      >
+        {index}
+      </span>
     </div>
   );
 }
@@ -61,7 +94,7 @@ export default function Manifesto({ t }: ManifestoProps) {
 
   return (
     /* overflow-x-clip contém o glow que vaza pela esquerda sem criar um
-       contexto de scroll, que é o que anularia o sticky do mosaico. */
+       contexto de scroll, que é o que anularia o sticky da coluna visual. */
     <section
       id="manifesto"
       aria-labelledby="manifesto-title"
@@ -92,44 +125,118 @@ export default function Manifesto({ t }: ManifestoProps) {
         }}
       />
 
-      <div className="relative max-w-[1280px] mx-auto grid gap-10 lg:gap-16 items-start grid-cols-1 lg:grid-cols-[1.05fr_1fr]">
-        {/* Mosaico de imagens conceito (estilo grid do GTA) */}
+      <div className="relative max-w-[1280px] mx-auto grid gap-10 lg:gap-16 items-start grid-cols-1 lg:grid-cols-[1.08fr_1fr]">
+        {/* Editorial: retrato dominante + contact sheet lateral */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.8, ease: EASE }}
-          className="grid grid-cols-2 grid-rows-4 gap-2 h-[clamp(480px,62vw,640px)] m-0 lg:sticky lg:top-24 lg:self-start"
+          className="lg:sticky lg:top-24 lg:self-start"
         >
-          <MosaicTile
-            src="/images/grid/model.jpg"
-            alt="OVRDRV — Illegal Racing Club · lookbook"
-            className="row-span-2"
-            tag="IRC"
-          />
-          <MosaicTile
-            src="/images/grid/banner-1.jpg"
-            alt="OVRDRV — Drop 01 · Illegal Racing Club"
-            tag="DROP 01"
-          />
-          <MosaicTile
-            src="/images/grid/post-2.jpg"
-            alt="OVRDRV — conceito de marca"
-            tag="OVRDRV"
-          />
-          <MosaicTile
-            src="/images/grid/banner-2.jpg"
-            alt="OVRDRV — Best car & wear"
-            className="col-span-2"
-          />
-          <MosaicTile
-            src="/images/grid/post-1.jpg"
-            alt="OVRDRV — coming soon"
-          />
-          <MosaicTile
-            src="/images/grid/post-3.jpg"
-            alt="OVRDRV — conceito de marca"
-          />
+          {/* Cabeçalho do lookbook */}
+          <div
+            className="flex items-center gap-3 mb-2.5 text-[10px] font-semibold tracking-[0.28em] uppercase"
+            style={MONO}
+          >
+            <span className="whitespace-nowrap text-[var(--ovr-purple-300)]">
+              {t.manifesto.lookbook.index}
+            </span>
+            <span
+              aria-hidden="true"
+              className="flex-1 h-px bg-[var(--ovr-line)]"
+            />
+            <span className="hidden sm:block whitespace-nowrap text-[var(--ovr-fg-dim)]">
+              {t.manifesto.lookbook.spec}
+            </span>
+          </div>
+
+          <div className="grid gap-2 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_23%] lg:h-[clamp(560px,72vh,760px)]">
+            {/* Foto principal */}
+            <figure className="group relative m-0 overflow-hidden bg-[var(--ovr-bg-soft)] border border-[var(--ovr-line)] transition-colors duration-500 hover:border-[var(--ovr-purple-600)] aspect-[3/4] lg:aspect-auto lg:h-full">
+              <Image
+                src="/images/lookbook/model-fuck-the-eletrics.jpg"
+                alt={t.manifesto.lookbook.shotAlt}
+                fill
+                sizes="(max-width: 1024px) 92vw, 480px"
+                className="object-cover object-[50%_26%] transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
+              />
+
+              {/* Scrim inferior — a foto dissolve no preto da seção */}
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background:
+                    'linear-gradient(to top, rgba(0,0,0,0.94) 0%, rgba(0,0,0,0.6) 15%, transparent 40%)',
+                }}
+              />
+              {/* Luz roxa lateral, mesma do glow da seção */}
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 pointer-events-none mix-blend-screen opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+                style={{
+                  background:
+                    'radial-gradient(120% 80% at 0% 100%, rgba(153,0,255,0.22), transparent 60%)',
+                }}
+              />
+
+              <CornerBrackets />
+
+              {/* Tag de drop */}
+              <span
+                className="absolute top-3 left-3 z-10 text-[9px] font-bold tracking-[0.22em] uppercase text-white bg-[var(--ovr-purple-500)] px-2 py-[4px]"
+                style={MONO}
+              >
+                {t.manifesto.lookbook.tag}
+              </span>
+
+              {/* Serial vertical na lateral direita */}
+              <span
+                aria-hidden="true"
+                className="absolute top-4 right-4 z-10 hidden sm:block text-[9px] font-semibold tracking-[0.32em] uppercase text-white/45 [writing-mode:vertical-rl]"
+                style={MONO}
+              >
+                {t.manifesto.lookbook.serial}
+              </span>
+
+              {/* Legenda */}
+              <figcaption className="absolute bottom-0 left-0 right-0 z-10 p-4 sm:p-5">
+                <div
+                  aria-hidden="true"
+                  className="h-px w-10 bg-[var(--ovr-purple-500)] mb-2.5 transition-all duration-500 group-hover:w-20"
+                />
+                <p
+                  className="text-[clamp(1.05rem,2.4vw,1.5rem)] font-bold uppercase leading-[1] tracking-[-0.01em] text-white m-0"
+                  style={{ fontFamily: 'var(--font-display)' }}
+                >
+                  {t.manifesto.lookbook.shotTitle}
+                </p>
+                <p
+                  className="mt-1.5 text-[10px] font-semibold tracking-[0.24em] uppercase text-[var(--ovr-fg-mute)] m-0"
+                  style={MONO}
+                >
+                  {t.manifesto.lookbook.shotCaption}
+                </p>
+              </figcaption>
+            </figure>
+
+            {/* Contact sheet lateral (embaixo no mobile) */}
+            <div className="grid gap-2 grid-cols-3 lg:grid-cols-1 lg:grid-rows-3 lg:h-full">
+              {RAIL_SHOTS.map((shot) => (
+                <RailShot key={shot.src} {...shot} />
+              ))}
+            </div>
+          </div>
+
+          {/* Rodapé do lookbook */}
+          <div
+            className="hidden lg:flex items-center justify-between mt-2.5 text-[10px] font-semibold tracking-[0.28em] uppercase text-[var(--ovr-fg-dim)]"
+            style={MONO}
+          >
+            <span>{t.manifesto.lookbook.origin}</span>
+            <span className="text-[var(--ovr-fg-faint)]">04 / 04</span>
+          </div>
         </motion.div>
 
         <motion.div
@@ -168,7 +275,11 @@ export default function Manifesto({ t }: ManifestoProps) {
 
           <ul className="grid grid-cols-3 gap-4 pt-8 mb-10 border-t border-[var(--ovr-line)] list-none m-0 p-0 pl-0">
             {t.manifesto.pillars.map((pillar) => (
-              <li key={pillar.label} className="flex flex-col gap-1.5">
+              <li key={pillar.label} className="group flex flex-col gap-1.5">
+                <span
+                  aria-hidden="true"
+                  className="h-px w-6 bg-[var(--ovr-purple-500)] mb-1 transition-all duration-500 group-hover:w-full"
+                />
                 <span
                   className="text-2xl md:text-[28px] font-bold tracking-[-0.02em] uppercase text-white"
                   style={{ fontFamily: 'var(--font-display)' }}
@@ -177,7 +288,7 @@ export default function Manifesto({ t }: ManifestoProps) {
                 </span>
                 <span
                   className="text-[10px] font-semibold tracking-[0.22em] uppercase text-[var(--ovr-fg-mute)]"
-                  style={{ fontFamily: 'var(--font-mono)' }}
+                  style={MONO}
                 >
                   {pillar.label}
                 </span>

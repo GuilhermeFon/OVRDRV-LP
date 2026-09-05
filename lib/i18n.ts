@@ -25,8 +25,17 @@ export const translations = {
         'Da madrugada no posto esperando alguém chegar. Do mês juntando dinheiro pra uma peça ou até mesmo pra pegar aquele carro dos sonhos.',
         'Nosso objetivo aqui não é vestir todo mundo. É vestir quem compartilha o mesmo sentimento. Pouca peça, numerada à mão. A gente prefere fazer pouco e fazer direito.',
       ],
-      mockupLabel: 'ILLEGAL RACING CLUB',
-      mockupCaption: 'MOCKUP · OVERSIZED TEE',
+      lookbook: {
+        index: 'LOOKBOOK / 001',
+        spec: 'OVERSIZED · 100% ALGODÃO',
+        tag: 'DROP 01',
+        serial: 'OVRDRV · IRC',
+        shotTitle: 'FUCK THE ELETRICS',
+        shotCaption: 'COSTAS · OVERSIZED PRETA',
+        shotAlt:
+          'Modelo de costas vestindo a camiseta oversized preta OVRDRV Fuck The Eletrics do Drop 01',
+        origin: 'SÃO PAULO · BRASIL',
+      },
       pillars: [
         { value: '001/100', label: 'Numerada à mão' },
         { value: 'DROP', label: 'Sem reposição' },
@@ -129,8 +138,17 @@ export const translations = {
         'About the late night at the gas station waiting for someone to show up. About the month spent saving for one part, or even for that dream car.',
         "Our goal here isn't to dress everybody. It's to dress whoever feels the same way. Few pieces, hand-numbered. We'd rather make less and make it right.",
       ],
-      mockupLabel: 'ILLEGAL RACING CLUB',
-      mockupCaption: 'MOCKUP · OVERSIZED TEE',
+      lookbook: {
+        index: 'LOOKBOOK / 001',
+        spec: 'OVERSIZED · 100% COTTON',
+        tag: 'DROP 01',
+        serial: 'OVRDRV · IRC',
+        shotTitle: 'FUCK THE ELETRICS',
+        shotCaption: 'BACK · BLACK OVERSIZED',
+        shotAlt:
+          'Model seen from behind wearing the black OVRDRV Fuck The Eletrics oversized tee from Drop 01',
+        origin: 'SÃO PAULO · BRAZIL',
+      },
       pillars: [
         { value: '001/100', label: 'Hand-numbered' },
         { value: 'DROP', label: 'No restocks' },
