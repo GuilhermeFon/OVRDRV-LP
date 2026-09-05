@@ -60,10 +60,12 @@ export default function Manifesto({ t }: ManifestoProps) {
   };
 
   return (
+    /* overflow-x-clip contém o glow que vaza pela esquerda sem criar um
+       contexto de scroll, que é o que anularia o sticky do mosaico. */
     <section
       id="manifesto"
       aria-labelledby="manifesto-title"
-      className="relative overflow-hidden"
+      className="relative overflow-x-clip"
       style={{ background: '#000', padding: 'clamp(72px, 10vw, 120px) 24px' }}
     >
       <div
@@ -90,14 +92,14 @@ export default function Manifesto({ t }: ManifestoProps) {
         }}
       />
 
-      <div className="relative max-w-[1280px] mx-auto grid gap-10 lg:gap-16 items-center grid-cols-1 lg:grid-cols-[1.05fr_1fr]">
+      <div className="relative max-w-[1280px] mx-auto grid gap-10 lg:gap-16 items-start grid-cols-1 lg:grid-cols-[1.05fr_1fr]">
         {/* Mosaico de imagens conceito (estilo grid do GTA) */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.8, ease: EASE }}
-          className="grid grid-cols-2 grid-rows-4 gap-2 h-[clamp(480px,62vw,640px)] m-0"
+          className="grid grid-cols-2 grid-rows-4 gap-2 h-[clamp(480px,62vw,640px)] m-0 lg:sticky lg:top-24 lg:self-start"
         >
           <MosaicTile
             src="/images/grid/model.jpg"
@@ -148,18 +150,21 @@ export default function Manifesto({ t }: ManifestoProps) {
             {t.manifesto.title}
           </h2>
 
-          <p
-            className="text-base md:text-lg text-white/85 leading-[1.55] mb-5"
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
-            {t.manifesto.lead}
-          </p>
-          <p
-            className="text-base text-[var(--ovr-fg-mute)] leading-[1.55] mb-10"
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
-            {t.manifesto.body}
-          </p>
+          <div className="max-w-[62ch] space-y-4 mb-10">
+            {t.manifesto.paragraphs.map((paragraph, i) => (
+              <p
+                key={paragraph}
+                className={`leading-[1.6] ${
+                  i === 0
+                    ? 'text-base md:text-lg text-white/90'
+                    : 'text-base text-white/70'
+                }`}
+                style={{ fontFamily: 'var(--font-body)' }}
+              >
+                {paragraph}
+              </p>
+            ))}
+          </div>
 
           <ul className="grid grid-cols-3 gap-4 pt-8 mb-10 border-t border-[var(--ovr-line)] list-none m-0 p-0 pl-0">
             {t.manifesto.pillars.map((pillar) => (

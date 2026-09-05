@@ -10,8 +10,6 @@ export const translations = {
     hero: {
       eyebrow: 'Illegal Racing Club',
       slogan: 'SEM LIMITE',
-      subtitle:
-        'Streetwear inspirado na cultura automotiva real. Cada peça numerada, edição limitada.',
       cta: 'Ver camisetas',
       scroll: 'SCROLL',
       loading: 'CARREGANDO EXPERIÊNCIA',
@@ -19,10 +17,14 @@ export const translations = {
     manifesto: {
       eyebrow: '— MANIFESTO —',
       title: 'NÃO É HYPE.\nÉ CULTURA.',
-      lead:
-        'OVRDRV nasce no escapamento, no posto às 2 da manhã, na rua que vive de motor turbinado. Streetwear pra quem mora na cena — não pra quem vê só por foto.',
-      body:
-        'Cada drop é numerado à mão. Edição limitada, sem reposição. Tuning, carspotting, hypercar — tudo entra no algodão e sai com assinatura.',
+      paragraphs: [
+        'A gente não começou com uma marca. Começou com um grupo de amigos, um posto na madrugada e carro que às vezes voltava de guincho.',
+        'Era ali que a gente aprendia tudo: quem tinha feito o quê no motor, quem ia aparecer no encontro. A gente só tava lá vivendo aquilo que gostamos.',
+        'A OVRDRV é isso em formato de roupa. Não é uma estética que a gente pesquisou, é o lugar de onde a gente veio. Do amor que começou ainda criança, seja no Underground 2 ou naquela cena do Carros com os carros tunados.',
+        'Todo mundo que faz roupa de carro fala de velocidade. A gente prefere falar de espera.',
+        'Da madrugada no posto esperando alguém chegar. Do mês juntando dinheiro pra uma peça ou até mesmo pra pegar aquele carro dos sonhos.',
+        'Nosso objetivo aqui não é vestir todo mundo. É vestir quem compartilha o mesmo sentimento. Pouca peça, numerada à mão. A gente prefere fazer pouco e fazer direito.',
+      ],
       mockupLabel: 'ILLEGAL RACING CLUB',
       mockupCaption: 'MOCKUP · OVERSIZED TEE',
       pillars: [
@@ -44,7 +46,7 @@ export const translations = {
       eyebrow: '— LISTA VIP · DROP 01 —',
       title: 'ENTRA PRA\nLISTA.',
       lead:
-        'Entre na lista VIP e receba acesso <strong>antecipado</strong> ao próximo drop. Edição numerada, sem reposição — só quem tá na lista compra antes da rua ver.',
+        'Entre na lista VIP e receba acesso <strong>antecipado</strong> ao próximo drop. Edição numerada, sem reposição. Quem tá na lista compra antes da rua ver.',
       stats: [
         { value: 'DROP', label: 'Sem reposição' },
         { value: 'BR · SP', label: 'Cultura real' },
@@ -52,7 +54,7 @@ export const translations = {
       cardTag: 'DROP #001',
       cardTitle: 'SALVE\nSUA VAGA.',
       cardSubtitle:
-        'Vaga limitada na lista VIP do DROP 01. Sem spam — só drop, lookbook e convite pros encontros.',
+        'Vaga limitada na lista VIP do DROP 01. Sem spam. Só drop, lookbook e convite pros encontros.',
       fields: { name: 'Nome', email: 'E-mail', whatsapp: 'WhatsApp' },
       placeholders: {
         name: 'Como te chamam',
@@ -62,11 +64,11 @@ export const translations = {
       sizeLabel: 'Tamanho',
       submit: 'SALVE SUA VAGA',
       sending: 'ENVIANDO…',
-      fine: 'Ao enviar você concorda em receber comunicações da OVRDRV. Seus dados ficam com a gente — só a gente.',
+      fine: 'Ao enviar você concorda em receber comunicações da OVRDRV. Seus dados ficam com a gente e não vão pra lugar nenhum.',
       errors: {
         name: 'Informe seu nome completo.',
         email: 'E-mail inválido.',
-        whatsapp: 'WhatsApp inválido — informe DDD + número.',
+        whatsapp: 'WhatsApp inválido. Informe DDD e número.',
         size: 'Selecione um tamanho.',
         generic: 'Deu ruim no envio. Tenta de novo.',
         notConfigured: 'Formulário ainda não configurado.',
@@ -111,8 +113,6 @@ export const translations = {
     hero: {
       eyebrow: 'Drop #001 - Illegal Racing Club',
       slogan: 'SEM LIMITE',
-      subtitle:
-        'Streetwear inspired by real street-car culture. Numbered pieces, limited edition.',
       cta: 'Explore Collection',
       ignite: 'ignite ?',
       scroll: 'SCROLL',
@@ -121,10 +121,14 @@ export const translations = {
     manifesto: {
       eyebrow: '— MANIFESTO —',
       title: "NOT HYPE.\nIT'S CULTURE.",
-      lead:
-        'OVRDRV starts at the exhaust, at the 2am gas station, on the streets that run on turbocharged engines. Streetwear for whoever lives the scene — not whoever sees it through a feed.',
-      body:
-        'Every drop is hand-numbered. Limited edition, no restocks. Tuning, carspotting, hypercars — it all goes into the cotton and comes out signed.',
+      paragraphs: [
+        "We didn't start with a brand. We started with a group of friends, a gas station in the middle of the night and a car that sometimes came home on a tow truck.",
+        "That's where we learned everything: who had done what to their engine, who was going to show up at the meet. We were just there, living the thing we loved.",
+        "OVRDRV is that, in clothing form. It's not an aesthetic we researched, it's where we came from. From a love that started when we were kids, whether in Underground 2 or in that scene from Cars with the tuned-up cars.",
+        "Everybody who makes car clothing talks about speed. We'd rather talk about waiting.",
+        'About the late night at the gas station waiting for someone to show up. About the month spent saving for one part, or even for that dream car.',
+        "Our goal here isn't to dress everybody. It's to dress whoever feels the same way. Few pieces, hand-numbered. We'd rather make less and make it right.",
+      ],
       mockupLabel: 'ILLEGAL RACING CLUB',
       mockupCaption: 'MOCKUP · OVERSIZED TEE',
       pillars: [
@@ -146,7 +150,7 @@ export const translations = {
       eyebrow: '— VIP LIST · DROP 01 —',
       title: 'JOIN THE\nLIST.',
       lead:
-        'Join the VIP list and get <strong>early</strong> access to the next drop. Numbered edition, no restocks — only the list buys before the street sees it.',
+        'Join the VIP list and get <strong>early</strong> access to the next drop. Numbered edition, no restocks. The list buys before the street sees it.',
       stats: [
         { value: 'DROP', label: 'No restocks' },
         { value: 'BR · SP', label: 'Real culture' },
@@ -154,7 +158,7 @@ export const translations = {
       cardTag: 'DROP #001',
       cardTitle: 'SAVE\nYOUR SPOT.',
       cardSubtitle:
-        'Limited spots on the DROP 01 VIP list. No spam — just drops, lookbook and meetup invites.',
+        'Limited spots on the DROP 01 VIP list. No spam. Just drops, lookbook and meetup invites.',
       fields: { name: 'Name', email: 'E-mail', whatsapp: 'WhatsApp' },
       placeholders: {
         name: 'What they call you',
@@ -164,11 +168,11 @@ export const translations = {
       sizeLabel: 'Size',
       submit: 'SAVE YOUR SPOT',
       sending: 'SENDING…',
-      fine: 'By submitting you agree to receive communications from OVRDRV. Your data stays with us — only us.',
+      fine: 'By submitting you agree to receive communications from OVRDRV. Your data stays with us and goes nowhere else.',
       errors: {
         name: 'Enter your full name.',
         email: 'Invalid e-mail.',
-        whatsapp: 'Invalid WhatsApp — include area code + number.',
+        whatsapp: 'Invalid WhatsApp. Include area code and number.',
         size: 'Select a size.',
         generic: 'Something went wrong. Try again.',
         notConfigured: 'Form not configured yet.',
